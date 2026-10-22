@@ -1,0 +1,1152 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Consultorio Odontológico G21</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: prototype bar on top; patient portal = centered column; staff = sidebar + workspace. Flow drawer on the right. */
+:root{
+  --accent:#0C5D56; --accent-ink:#ffffff; --accent-soft:#e3f0ee; --accent-line:#b9d6d2;
+  --bg:#FFFFFF; --bg-1:#FFFFFF; --bg-2:#FFFFFF; --bg-3:#FFFFFF; --surface:#ffffff; --surface-2:#F8FAFC; --line:#E2E8F0; --fg:#0F172A; --muted:#64748B;
+  --hl:#F0FDF4; --hl-line:#BBF7D0;
+  --ok:#1f7a4d; --ok-soft:#e2f3ea; --warn:#8a5a00; --warn-soft:#fbf0d9; --bad:#b42318; --bad-soft:#fde8e6;
+  --wa:#d9fdd3; --wa-bg:#efeae2; --wa-ink:#111b21;
+  --f-display:"Bricolage Grotesque", "Onest", system-ui, sans-serif;
+  --f-body:"Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r:10px; --r-lg:16px; color-scheme:light;
+  --shadow:0 1px 3px rgba(15,23,42,.08), 0 8px 24px rgba(15,23,42,.06); --shadow-sm:0 1px 3px rgba(15,23,42,.10); --shadow-panel:0 10px 40px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box}
+html{background:var(--bg-3)}
+body{background:var(--bg);color:var(--fg);min-height:100vh}
+body{font-family:var(--f-body);font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--f-display);font-weight:650;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1{font-size:1.75rem;line-height:1.15}
+h2{font-size:1.2rem}
+h3{font-size:1rem}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-size:.86em;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+/* prototype bar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--fg)}
+.pbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--fg);color:var(--bg);
+  padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pbar .tag{font-family:var(--f-mono);font-size:.72rem;opacity:.7}
+.pbar .roles{display:flex;gap:4px;background:rgba(127,127,127,.18);padding:3px;border-radius:999px;flex-wrap:wrap}
+.pbar .roles button{border:0;background:transparent;color:inherit;padding:4px 12px;border-radius:999px;cursor:pointer;font-size:.85rem}
+.pbar .roles button[aria-pressed="true"]{background:var(--bg);color:var(--fg)}
+.pbar .sp{flex:1}
+.pbar .ghost{border:1px solid rgba(127,127,127,.4);background:transparent;color:inherit;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:.82rem}
+.cov{display:inline-flex;align-items:center;gap:6px}
+.cov i{display:block;width:60px;height:5px;border-radius:9px;background:rgba(127,127,127,.35);overflow:hidden}
+.cov i b{display:block;height:100%;background:var(--accent)}
+
+/* generic */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);
+  padding:9px 16px;border-radius:var(--r);cursor:pointer;font-weight:500;transition:background .15s,border-color .15s;white-space:nowrap}
+.btn:hover{border-color:var(--accent-line);background:var(--surface-2)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--bad);border-color:var(--bad-soft)}
+.btn.sm{padding:6px 11px;font-size:.85rem}
+.btn.lg{padding:12px 20px;font-size:1rem}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--accent);cursor:pointer;padding:0;font-weight:500}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow-sm)}
+.card.flat{box-shadow:none}
+.card.raised{box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:12px}
+.stack.lg{gap:20px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.field label .req{color:var(--bad)}
+.input,select.input,textarea.input{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:var(--r);padding:10px 12px;min-width:0}
+textarea.input{min-height:76px;resize:vertical}
+.input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.pill.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+.node{width:fit-content;align-self:flex-start;font-family:var(--f-mono);font-size:.7rem;color:var(--accent);border:1px dashed var(--accent-line);padding:2px 8px;border-radius:6px;display:inline-flex;gap:6px;align-items:center}
+.alert{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r);background:var(--bad-soft);color:var(--bad)}
+.alert.info{background:var(--accent-soft);color:var(--accent)}
+.alert.warn{background:var(--warn-soft);color:var(--warn)}
+.alert.ok{background:var(--ok-soft);color:var(--ok)}
+.alert b{display:block}
+.alert p{color:var(--fg);opacity:.85}
+.hr{height:1px;background:var(--line);border:0;margin:4px 0}
+.ico{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600;font-size:.85rem;flex:none}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px 20px}
+.kv div span{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty .big{font-family:var(--f-display);font-size:1.3rem;color:var(--fg);margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;cursor:pointer;font-size:.82rem}
+.chip:hover{border-color:var(--accent)}
+.chip .mono{color:var(--accent)}
+
+/* patient shell */
+.pshell{max-width:1080px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ptop{display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;background:var(--surface);border-radius:var(--r-lg);padding:12px 18px;box-shadow:var(--shadow-sm)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:650;line-height:1.1}
+.brand .mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.04em}
+.ptop nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.ptop nav button{border:0;background:none;padding:7px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:500}
+.ptop nav button[aria-current="true"]{color:var(--accent);background:var(--accent-soft)}
+
+/* staff shell */
+.swrap{padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sshell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 120px);max-width:1440px;margin:0 auto;background:var(--surface);border-radius:36px;border:1px solid var(--line);box-shadow:var(--shadow-panel);overflow:hidden}
+.side{background:var(--surface);border-right:1px solid var(--line);padding:28px 16px;display:flex;flex-direction:column;gap:22px}
+.side nav{display:flex;flex-direction:column;gap:2px}
+.side nav button{display:flex;gap:10px;align-items:center;border:0;background:none;text-align:left;padding:9px 12px;border-radius:9px;cursor:pointer;color:var(--muted);font-weight:500}
+.side nav button:hover{background:var(--surface-2);color:var(--fg)}
+.side nav button[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
+.side nav .badge{margin-left:auto;font-size:.72rem;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:0 7px;font-weight:600}
+.side nav button[aria-current="true"] .badge{background:rgba(255,255,255,.2);color:inherit}
+.side .who{margin-top:auto;display:flex;gap:10px;align-items:center;padding:10px;border-top:1px solid var(--line)}
+.main{padding:32px clamp(16px,4vw,48px) 48px;min-width:0}
+.main-in{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.phead{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap}
+.phead p{color:var(--muted);margin-top:4px}
+@media (max-width:820px){
+  .sshell{grid-template-columns:1fr;border-radius:20px}
+  .side{flex-direction:row;align-items:center;padding:10px 16px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);gap:12px}
+  .side nav{flex-direction:row}
+  .side .who,.side .brand small{display:none}
+}
+
+/* stepper */
+.steps{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.steps .st{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted)}
+.steps .st b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.75rem;border:1px solid var(--line);background:var(--surface)}
+.steps .st.on{color:var(--accent);font-weight:600}
+.steps .st.on b{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.steps .st.done b{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.steps .sep{width:28px;height:1px;background:var(--line)}
+
+/* list rows */
+.list{display:flex;flex-direction:column;gap:8px}
+.lrow{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);flex-wrap:wrap;box-shadow:var(--shadow-sm)}
+.lrow.hl{border-color:var(--hl-line);background:var(--hl)}
+.lrow .grow{flex:1;min-width:160px}
+.lrow.click{cursor:pointer}
+.lrow.click:hover{border-color:var(--accent-line)}
+.pos{font-family:var(--f-display);font-size:1.3rem;width:34px;text-align:center;color:var(--accent)}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);font-weight:600;background:var(--surface-2)}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .h{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;padding-bottom:4px}
+.cal button{aspect-ratio:1/1;max-width:100%;border-radius:10px;border:1px solid transparent;background:var(--surface-2);cursor:pointer;font-variant-numeric:tabular-nums;font-weight:500;position:relative}
+.cal button.ok{background:var(--ok-soft);color:var(--ok)}
+.cal button.few{background:var(--warn-soft);color:var(--warn)}
+.cal button.none{background:var(--bad-soft);color:var(--bad);text-decoration:line-through;cursor:not-allowed}
+.cal button.off,.cal button.past{background:transparent;color:var(--muted);opacity:.5;cursor:not-allowed}
+.cal button.out{visibility:hidden}
+.cal button.sel{background:var(--accent);color:var(--accent-ink)}
+.cal button.today::after{content:"";position:absolute;bottom:5px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:currentColor}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.slots button{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:9px 0;cursor:pointer;font-variant-numeric:tabular-nums}
+.slots button:hover{border-color:var(--accent)}
+.slots button.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.book-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.book-grid{grid-template-columns:1fr}}
+
+/* summary bar */
+.sum{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:14px 18px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.sum > div{display:flex;gap:10px;align-items:center;min-width:0}
+.sum small{display:block;color:var(--muted);font-size:.78rem}
+
+/* queue hero */
+.qhero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+.qnum{font-family:var(--f-display);font-size:4.5rem;line-height:1;color:var(--accent);font-weight:650}
+.track{display:flex;gap:0;margin-top:14px}
+.track div{flex:1;text-align:center;font-size:.78rem;color:var(--muted);position:relative;padding-top:18px}
+.track div::before{content:"";position:absolute;top:5px;left:0;right:0;height:3px;background:var(--line)}
+.track div::after{content:"";position:absolute;top:0;left:50%;margin-left:-6px;width:13px;height:13px;border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.track div.on{color:var(--accent);font-weight:600}
+.track div.on::before,.track div.on::after{background:var(--accent);border-color:var(--accent)}
+
+/* odontogram */
+.odo{display:flex;flex-direction:column;gap:6px;overflow-x:auto;padding-bottom:4px}
+.odo .r{display:flex;gap:4px;justify-content:center;min-width:560px}
+.odo .r .mid{width:12px}
+.odo button{width:30px;height:34px;border-radius:7px 7px 10px 10px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-mono);font-size:.72rem;cursor:pointer}
+.odo .r.low button{border-radius:10px 10px 7px 7px}
+.odo button.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* toggles (anamnesis) */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.tg{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;background:var(--surface);text-align:left}
+.tg .box{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;flex:none}
+.tg.on{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent);font-weight:500}
+.tg.on .box{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:8px 16px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+
+/* whatsapp */
+.wa{background:var(--wa-bg);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.wa .head{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted)}
+.wa .bub{background:var(--wa);color:var(--wa-ink);border-radius:10px 10px 2px 10px;padding:10px 12px;max-width:420px;align-self:flex-end;font-size:.88rem;white-space:pre-line;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.wa .bub small{display:block;text-align:right;opacity:.6;font-size:.7rem;margin-top:4px}
+
+/* decision track for reception */
+.dtrack{display:flex;flex-direction:column;gap:0}
+.dstep{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding-bottom:16px;position:relative}
+.dstep::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line)}
+.dstep:last-child::before{display:none}
+.dstep .q{width:28px;height:28px;border-radius:8px;transform:rotate(45deg) scale(.78);display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line)}
+.dstep .q span{transform:rotate(-45deg);font-size:.7rem;font-weight:700}
+.dstep.yes .q{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.dstep.no .q{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.dstep.cur .q{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+/* drawer & toast & modal */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(380px,100%);background:var(--surface);border-left:1px solid var(--line);z-index:40;
+  padding:calc(20px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) 20px 20px;overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.12)}
+.drawer h3{margin:18px 0 8px}
+.drawer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.drawer li{display:flex;gap:8px;align-items:center;font-size:.86rem;color:var(--muted)}
+.drawer li.v{color:var(--fg)}
+.drawer li i{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line);flex:none;display:grid;place-items:center;font-style:normal;font-size:.7rem}
+.drawer li.v i{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.drawer li.dec i{border-radius:3px;transform:rotate(45deg) scale(.8)}
+.drawer li.dec.v i{transform:rotate(45deg) scale(.8)}
+.scrim{position:fixed;inset:0;background:rgba(10,20,18,.35);z-index:35}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:50;font-size:.9rem;box-shadow:var(--shadow);max-width:calc(100% - 32px);animation:up .25s ease}
+@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}
+.modal{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:16px}
+.modal{pointer-events:none}
+.modal .card{pointer-events:auto;max-width:520px;width:100%;max-height:90vh;overflow:auto}
+
+/* home */
+.home{max-width:1080px;margin:0 auto;padding-block:48px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:32px}
+.home h1{font-size:clamp(2rem,5vw,3.1rem);max-width:18ch}
+.roles3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:820px){.roles3{grid-template-columns:1fr}}
+.rolecard{text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:12px;transition:border-color .15s, transform .15s}
+.rolecard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.rolecard .ri{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.rolecard ul{margin:0;padding-left:18px;color:var(--muted);font-size:.88rem}
+.scen{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:720px){.scen{grid-template-columns:1fr}}
+.scen div{padding:12px 14px;border:1px dashed var(--line);border-radius:12px}
+.qhero-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.qhero-wrap{grid-template-columns:1fr}.qhero{grid-template-columns:1fr}}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+@media (max-width:960px){.cols3{grid-template-columns:1fr}}
+.colh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.offer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.offer{grid-template-columns:1fr}}
+.offer .o{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.offer .o .d{font-family:var(--f-display);font-size:1.05rem}
+.callbanner{background:var(--accent);color:var(--accent-ink);border-radius:var(--r-lg);padding:16px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.callbanner .grow{flex:1;min-width:200px}
+.callbanner .btn{background:transparent;color:inherit;border-color:rgba(255,255,255,.4)}
+</style>
+
+<div id="app"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const DOW=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MON=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const fmtLong=s=>{const d=parse(s);return `${cap(DOW[d.getDay()])} ${d.getDate()} de ${MON[d.getMonth()]}`};
+const fmtShort=s=>{const d=parse(s);return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${String(d.getFullYear()).slice(2)}`};
+const nowHM=()=>{const d=new Date();return `${pad(d.getHours())}:${pad(d.getMinutes())}`};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hh=str=>{let h=7;for(const c of str)h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)};
+const TODAY=iso(new Date());
+const nextWeekday=(from,n)=>{let d=parse(from),c=0;while(c<n){d=addDays(d,1);if(d.getDay()%6)c++}return iso(d)};
+const initials=n=>n.split(/[ ,]+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const age=nac=>{const b=parse(nac),t=new Date();let a=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))a--;return a};
+const $=id=>document.getElementById(id);
+const val=id=>($(id)?.value||'').trim();
+
+const I={
+  tooth:'<svg class="ico" viewBox="0 0 24 24"><path d="M7 3c-2.5 0-4 2-4 4.5 0 3 1.5 4.5 2 7.5.4 2.6 1 6 2.5 6s1.8-3 2.5-5.5c.3-1 1.7-1 2 0 .7 2.5 1 5.5 2.5 5.5s2.1-3.4 2.5-6c.5-3 2-4.5 2-7.5C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></svg>',
+  user:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  users:'<svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.5-5.5 6.5-5.5s5.5 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5c1.8.6 3 2.4 3.5 5.5"/></svg>',
+  cal:'<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  clip:'<svg class="ico" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg>',
+  door:'<svg class="ico" viewBox="0 0 24 24"><path d="M4 21h16M6 21V4h9v17M15 6l4 1v14"/><circle cx="12" cy="13" r=".6"/></svg>',
+  queue:'<svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
+  home:'<svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7M5 10v10h14V10"/></svg>',
+  check:'<svg class="ico" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>',
+  warn:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>',
+  phone:'<svg class="ico" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
+  arrow:'<svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  back:'<svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  search:'<svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  pin:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+  bell:'<svg class="ico" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></svg>',
+  plus:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+  msg:'<svg class="ico" viewBox="0 0 24 24"><path d="M4 20l1.5-4A8 8 0 1 1 9 19.5z"/></svg>',
+  out:'<svg class="ico" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg>',
+};
+
+/* ---------- data ---------- */
+const PROFS=[
+  {id:'L',nombre:'Dra. Martina López',esp:'Odontología general',mat:'M.N. 38.457',box:'Consultorio 2',dias:[1,2,3,4,5],tipos:['Consulta y revisión','Limpieza','Urgencia']},
+  {id:'D',nombre:'Dr. Martín Domínguez',esp:'Ortodoncia',mat:'M.N. 41.203',box:'Consultorio 1',dias:[1,3,5],tipos:['Consulta y revisión','Control de ortodoncia']},
+  {id:'S',nombre:'Dra. Lucía Saccone',esp:'Endodoncia',mat:'M.N. 36.880',box:'Consultorio 3',dias:[2,4],tipos:['Consulta y revisión','Tratamiento de conducto','Urgencia']},
+];
+const TIPOS=['Consulta y revisión','Limpieza','Urgencia','Control de ortodoncia','Tratamiento de conducto'];
+const SEDE='Sede Centro · Av. Colón 1234, Córdoba';
+const TIMES=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+const CONDS=['Problemas cardíacos','Cefaleas frecuentes','Artritis o artrosis','Alteraciones nerviosas','Hepatitis','Presión sanguínea alta','Presión sanguínea baja','Problemas de coagulación','Problemas renales','Fiebre reumática','Problemas gástricos','Alergia al látex','Diabetes','HIV / Sida','Epilepsia'];
+const ALERT_CONDS=['Problemas cardíacos','Problemas de coagulación','Alergia al látex','Diabetes','Epilepsia','Presión sanguínea alta','Hepatitis'];
+
+function seed(){
+  const d2=nextWeekday(TODAY,2);
+  return {
+    patients:[
+      {id:'p1',hc:'HC-2024-001',nombre:'Gutiérrez, María Paz',dni:'44122123',nac:'2002-03-14',tel:'+54 9 351 555-1234',email:'mpgutierrez@correo.com',dom:'Av. Colón 1234, 3° B',loc:'Córdoba',os:'Particular / Sin obra social',afil:'',ocup:'Estudiante',conds:['Problemas de coagulación'],alergia:'Penicilina',meds:'No',fuma:'No'},
+      {id:'p2',hc:'HC-2023-118',nombre:'Saccone, Facundo',dni:'38647762',nac:'1994-08-02',tel:'+54 9 351 612-0098',email:'fsaccone@correo.com',dom:'Bv. San Juan 410',loc:'Córdoba',os:'OSDE',afil:'61234567/01',ocup:'Docente',conds:[],alergia:'No',meds:'No',fuma:'Sí'},
+      {id:'p3',hc:'HC-2024-047',nombre:'Lombardi, Rocío',dni:'40155234',nac:'1997-11-21',tel:'+54 9 351 700-4410',email:'rlombardi@correo.com',dom:'Obispo Trejo 255',loc:'Córdoba',os:'Apross',afil:'2045519',ocup:'Diseñadora',conds:['Presión sanguínea alta'],alergia:'No',meds:'Enalapril',fuma:'No'},
+      {id:'p4',hc:'HC-2022-310',nombre:'Márquez, Elena',dni:'35012987',nac:'1990-05-09',tel:'+54 9 351 433-2871',email:'emarquez@correo.com',dom:'Rondeau 88',loc:'Córdoba',os:'Swiss Medical',afil:'SM-883201',ocup:'Contadora',conds:[],alergia:'No',meds:'No',fuma:'No'},
+      {id:'p5',hc:'HC-2021-022',nombre:'Pereyra, Juan Carlos',dni:'30111222',nac:'1983-01-30',tel:'+54 9 351 389-5520',email:'jcpereyra@correo.com',dom:'Av. Vélez Sarsfield 1500',loc:'Córdoba',os:'PAMI',afil:'150334229',ocup:'Comerciante',conds:['Diabetes'],alergia:'No',meds:'Metformina',fuma:'No'},
+    ],
+    turnos:[
+      {id:'T-4821',pac:'p1',prof:'L',fecha:TODAY,hora:'10:30',tipo:'Consulta y revisión',estado:'confirmado'},
+      {id:'T-4815',pac:'p2',prof:'L',fecha:TODAY,hora:'09:00',tipo:'Limpieza',estado:'confirmado'},
+      {id:'T-4817',pac:'p3',prof:'L',fecha:TODAY,hora:'09:30',tipo:'Urgencia',estado:'confirmado'},
+      {id:'T-4830',pac:'p4',prof:'D',fecha:d2,hora:'11:00',tipo:'Control de ortodoncia',estado:'confirmado'},
+    ],
+    cola:[
+      {id:'c1',pac:'p2',turno:'T-4815',prof:'L',llegada:'08:52',estado:'espera'},
+      {id:'c2',pac:'p3',turno:'T-4817',prof:'L',llegada:'09:14',estado:'espera'},
+    ],
+    salida:[],
+    hc:[
+      {pac:'p1',fecha:'2026-08-20',prof:'D',motivo:'Control de ortodoncia',piezas:'13, 23',proc:'Ajuste de arco',diag:'Evolución favorable',notas:'Sin dolor. Próximo control en 4 semanas.'},
+      {pac:'p1',fecha:'2026-07-16',prof:'D',motivo:'Control de ortodoncia',piezas:'—',proc:'Cambio de ligaduras',diag:'Sin novedades',notas:'Refuerzo de higiene interproximal.'},
+      {pac:'p1',fecha:'2026-05-02',prof:'L',motivo:'Consulta y revisión',piezas:'36',proc:'Obturación compuesta clase I',diag:'Caries oclusal',notas:'Se trabajó con hemostasia local por antecedente de coagulación.'},
+      {pac:'p2',fecha:'2026-04-11',prof:'L',motivo:'Limpieza',piezas:'—',proc:'Tartrectomía y pulido',diag:'Gingivitis leve',notas:'Indicar cepillo suave.'},
+      {pac:'p5',fecha:'2026-09-30',prof:'S',motivo:'Tratamiento de conducto',piezas:'46',proc:'Endodoncia 1° sesión',diag:'Pulpitis irreversible',notas:'Medicación intraconducto. Paciente diabético: control de glucemia previo.'},
+    ],
+    wa:[],
+  };
+}
+
+const FLOW={
+  paciente:[['p.acceso','Acceso paciente'],['p.validar','Validar identidad'],['p.existe','¿Existe?',1],['p.registrar','Registrar datos paciente'],['p.tiene','¿Tiene turno?',1],['p.cola','Ver posición en la cola y demora'],['p.turnos','Visualizar turnos disponibles'],['p.solicitar','Seleccionar y solicitar'],['p.constancia','Recibir constancia vía WhatsApp']],
+  odontologo:[['o.acceso','Acceso odontólogo'],['o.hay','¿Pacientes en cola?',1],['o.marcar','Marcar paciente como "Siendo atendido"'],['o.llamar','Llamar a paciente'],['o.info','Visualizar información del paciente'],['o.atender','Atender paciente'],['o.hc','Actualizar historia clínica'],['o.necesita','¿Necesita turno?',1],['o.ofrecer','Ofrecer turnos disponibles'],['o.acepta','¿Acepta?',1],['o.mas','¿Buscar más opciones?',1],['o.quitar','Quitar de la cola a paciente']],
+  secretario:[['s.acceso','Acceso secretario'],['s.llegada','Llegada de cliente'],['s.registrado','¿Registrado?',1],['s.registra','Registra datos paciente'],['s.tiene','¿Tiene turno?',1],['s.validar','Validar turno'],['s.valido','¿Es válido?',1],['s.informar','Informar situación'],['s.agregar','Agregar paciente a cola'],['s.brindar','Brindar atención odontológica'],['s.quitar','Quitar de la cola'],['s.historial','Registra historial clínico'],['s.otro','¿Necesita otro turno?',1],['s.ofrecer','Ofrecer turnos disponibles'],['s.acepta','¿Acepta?',1],['s.mas','¿Buscar más opciones?',1],['s.constancia','Entregar constancia de turno vía WhatsApp']],
+};
+const FLOW_LABEL={paciente:'Paciente',odontologo:'Odontólogo',secretario:'Secretaría'};
+const ALL_NODES=Object.values(FLOW).flat();
+const NODE_NAME=Object.fromEntries(ALL_NODES.map(n=>[n[0],n[1]]));
+
+/* ---------- state ---------- */
+let S;
+function reset(){
+  S={...seed(),role:null,view:'home',visited:new Set(),flowOpen:false,toast:null,modal:null,
+     pUser:null,oUser:'L',
+     plogin:{dni:'',state:null},
+     book:null, preg:null,
+     rec:{q:'',pac:null,res:null,stage:null,val:null},
+     reg:null, offer:null, att:null, close:null, pfilter:'', hcq:'', viewPac:null};
+}
+reset();
+const pac=id=>S.patients.find(p=>p.id===id);
+const prof=id=>PROFS.find(p=>p.id===id);
+const turno=id=>S.turnos.find(t=>t.id===id);
+const visit=(...ids)=>ids.forEach(i=>S.visited.add(i));
+const nextTurnoOf=pid=>S.turnos.filter(t=>t.pac===pid&&t.estado==='confirmado'&&t.fecha>=TODAY).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora))[0];
+const colaOf=pid=>S.cola.find(c=>c.pac===pid);
+const newTurnoId=()=>'T-'+(4831+S.turnos.length+Math.floor(Math.random()*9));
+
+function slotsFor(pid,date){
+  const p=prof(pid),d=parse(date);
+  if(!p.dias.includes(d.getDay())) return [];
+  if(date<TODAY) return [];
+  return TIMES.filter(t=>hh(pid+date+t)%3!==0
+    && !S.turnos.some(x=>x.prof===pid&&x.fecha===date&&x.hora===t&&x.estado!=='cancelado')
+    && !(date===TODAY && t<=nowHM()));
+}
+function dayState(pid,date){
+  const p=prof(pid),d=parse(date);
+  if(date<TODAY) return 'past';
+  if(!p.dias.includes(d.getDay())) return 'off';
+  const n=slotsFor(pid,date).length;
+  return n===0?'none':n<=4?'few':'ok';
+}
+function offerSlots(pid,page){
+  const out=[];let d=addDays(parse(TODAY),1);
+  for(let i=0;i<90&&out.length<(page+1)*3;i++,d=addDays(d,1)){
+    const s=iso(d),sl=slotsFor(pid,s);
+    if(sl.length) out.push({fecha:s,hora:sl[hh(s)%sl.length]});
+  }
+  return out.slice(page*3,page*3+3);
+}
+function queueFor(pid){return S.cola.filter(c=>c.prof===pid&&c.estado!=='finalizado')}
+function queuePos(c){
+  const q=S.cola.filter(x=>x.prof===c.prof&&x.estado==='espera');
+  const pos=q.findIndex(x=>x.id===c.id)+1;
+  const busy=S.cola.some(x=>x.prof===c.prof&&x.estado==='atendiendo');
+  return {pos,wait:(pos-1)*30+(busy?20:0)};
+}
+function sendWA(p,t,kind){
+  const pr=prof(t.prof);
+  const first=p.nombre.split(',')[1]?.trim().split(' ')[0]||p.nombre;
+  const text=kind==='cola'
+    ? `Consultorio Odontológico\nHola ${first}, ya estás en la sala de espera.\nTurno ${t.id} con ${pr.nombre}.\nTe avisamos por acá cuando te llamen.`
+    : `Consultorio Odontológico\nHola ${first}, tu turno quedó CONFIRMADO.\n\n${fmtLong(t.fecha)} · ${t.hora} h\n${pr.nombre} · ${t.tipo}\n${SEDE}\nCódigo: ${t.id}\n\nSi no podés asistir, respondé CANCELAR.`;
+  const m={to:p.tel,text,at:nowHM(),pac:p.id};
+  S.wa.push(m);return m;
+}
+
+/* ---------- render ---------- */
+const app=$('app');
+function render(){
+  const total=ALL_NODES.length,done=ALL_NODES.filter(n=>S.visited.has(n[0])).length;
+  let body='';
+  if(!S.role) body=vHome();
+  else if(S.role==='paciente') body=vPatient();
+  else body=vStaff();
+  app.innerHTML=`
+  <div class="pbar">
+    <strong style="font-family:var(--f-display)">Prototipo · Grupo 21</strong>
+    <span class="tag">Turnos odontológicos</span>
+    <div class="roles" role="group" aria-label="Rol">
+      <button data-a="go-home" aria-pressed="${!S.role}">Inicio</button>
+      <button data-a="role" data-r="paciente" aria-pressed="${S.role==='paciente'}">Paciente</button>
+      <button data-a="role" data-r="odontologo" aria-pressed="${S.role==='odontologo'}">Odontólogo</button>
+      <button data-a="role" data-r="secretario" aria-pressed="${S.role==='secretario'}">Secretaría</button>
+    </div>
+    <span class="sp"></span>
+    <button class="ghost cov" data-a="flow" title="Nodos del diagrama recorridos">Flujo ${done}/${total}<i><b style="width:${Math.round(done/total*100)}%"></b></i></button>
+    <button class="ghost" data-a="reset">Reiniciar demo</button>
+  </div>
+  ${body}
+  ${S.flowOpen?vFlow():''}
+  ${S.modal?vModal():''}
+  ${S.toast?`<div class="toast" role="status">${esc(S.toast)}</div>`:''}`;
+}
+let toastT;
+function toast(m){S.toast=m;clearTimeout(toastT);toastT=setTimeout(()=>{S.toast=null;render()},3200)}
+const node=id=>`<span class="node" title="Nodo del diagrama de flujo">◇ ${esc(NODE_NAME[id]||id)}</span>`;
+const brand=(sub='Odontología integral')=>`<div class="brand"><span class="mark">${I.tooth}</span><span>Consultorio Odontológico<small>${sub}</small></span></div>`;
+
+function vHome(){
+  return `<main class="home">
+    <div class="stack" style="gap:14px">
+      ${brand('Sistema de turnos y cola de atención')}
+      <h1>Elegí con qué rol querés recorrer el flujo</h1>
+      <p class="muted" style="max-width:62ch">Los tres roles comparten los mismos datos. Si la secretaría agrega a alguien a la cola, el odontólogo lo ve para llamarlo y el paciente ve su posición y la demora estimada. El botón <b>Flujo</b> marca qué nodos del diagrama ya recorriste.</p>
+    </div>
+    <div class="roles3">
+      <button class="card rolecard" data-a="role" data-r="paciente"><span class="ri">${I.user}</span><h2>Paciente</h2>
+        <ul><li>Validar identidad o registrarse</li><li>Pedir turno con calendario</li><li>Ver posición en la cola</li><li>Constancia por WhatsApp</li></ul></button>
+      <button class="card rolecard" data-a="role" data-r="odontologo"><span class="ri">${I.tooth}</span><h2>Odontólogo</h2>
+        <ul><li>Cola de pacientes del día</li><li>Llamar y marcar "Siendo atendido"</li><li>Ficha y odontograma</li><li>Turno de seguimiento</li></ul></button>
+      <button class="card rolecard" data-a="role" data-r="secretario"><span class="ri">${I.door}</span><h2>Secretaría</h2>
+        <ul><li>Recepción y validación de turno</li><li>Alta de paciente con anamnesis</li><li>Gestión de la cola</li><li>Cierre: historial y otro turno</li></ul></button>
+    </div>
+    <div class="stack">
+      <span class="eyebrow">DNI de prueba para cubrir cada rama</span>
+      <div class="scen">
+        <div><span class="mono">44122123</span> · María Paz Gutiérrez<br><span class="muted small">Tiene turno hoy 10:30 y todavía no llegó. Rama: turno válido → cola.</span></div>
+        <div><span class="mono">35012987</span> · Elena Márquez<br><span class="muted small">Tiene turno, pero para otro día. Rama: turno no válido → informar situación.</span></div>
+        <div><span class="mono">30111222</span> · Juan Carlos Pereyra<br><span class="muted small">Registrado, sin turno. Rama: ofrecer turnos → acepta / buscar más opciones.</span></div>
+        <div><span class="mono">27999555</span> · cualquier DNI nuevo<br><span class="muted small">No registrado. Rama: registrar datos (y anamnesis en secretaría).</span></div>
+      </div>
+    </div>
+  </main>`;
+}
+
+function vFlow(){
+  return `<div class="scrim" data-a="flow"></div><aside class="drawer" aria-label="Cobertura del flujo">
+    <div class="row between"><h2>Cobertura del diagrama</h2><button class="btn sm" data-a="flow">Cerrar</button></div>
+    <p class="muted small" style="margin-top:6px">Cada acción del prototipo marca el nodo del diagrama que representa. Los rombos son decisiones.</p>
+    ${Object.entries(FLOW).map(([k,arr])=>`<h3>${FLOW_LABEL[k]}</h3><ul>${arr.map(([id,n,dec])=>`<li class="${S.visited.has(id)?'v':''} ${dec?'dec':''}"><i>${S.visited.has(id)?'✓':''}</i>${esc(n)}</li>`).join('')}</ul>`).join('')}
+  </aside>`;
+}
+
+function vModal(){
+  const m=S.modal;
+  if(m.type==='wa'){
+    return `<div class="scrim" data-a="close-modal"></div><div class="modal" role="dialog" aria-label="Constancia por WhatsApp"><div class="card raised stack">
+      <div class="row between"><h2>Mensaje enviado por WhatsApp</h2><button class="btn sm" data-a="close-modal">Cerrar</button></div>
+      <p class="muted small">Destino: <span class="mono">${esc(m.msg.to)}</span></p>
+      ${waBox(m.msg)}
+    </div></div>`;
+  }
+  if(m.type==='hcdet'){
+    const h=m.h;
+    return `<div class="scrim" data-a="close-modal"></div><div class="modal" role="dialog"><div class="card raised stack">
+      <div class="row between"><h2>${esc(h.motivo)}</h2><button class="btn sm" data-a="close-modal">Cerrar</button></div>
+      <div class="kv"><div><span>Fecha</span>${fmtShort(h.fecha)}</div><div><span>Profesional</span>${esc(prof(h.prof).nombre)}</div><div><span>Piezas (FDI)</span><span class="mono">${esc(h.piezas)}</span></div></div>
+      <div><span class="eyebrow">Procedimiento</span><p>${esc(h.proc)}</p></div>
+      <div><span class="eyebrow">Diagnóstico</span><p>${esc(h.diag)}</p></div>
+      <div><span class="eyebrow">Notas</span><p>${esc(h.notas)}</p></div>
+    </div></div>`;
+  }
+  return '';
+}
+const waBox=m=>`<div class="wa"><div class="head">${I.msg} WhatsApp · Consultorio Odontológico</div><div class="bub">${esc(m.text)}<small>${m.at} ✓✓</small></div></div>`;
+
+/* ======================= PATIENT ======================= */
+function vPatient(){
+  const v=S.view;let inner='';
+  if(v==='p.login') inner=pLogin();
+  else if(v==='p.register') inner=pRegister();
+  else if(v==='p.home') inner=pHome();
+  else if(v==='p.book') inner=pBook();
+  else if(v==='p.done') inner=pDone();
+  const p=S.pUser&&pac(S.pUser);
+  return `<div class="pshell"><header class="ptop">${brand()}
+    ${p?`<nav aria-label="Portal paciente">
+      <button data-a="nav" data-v="p.home" aria-current="${v==='p.home'}">Mi turno</button>
+      <button data-a="p-newbook" aria-current="${v==='p.book'}">Pedir turno</button>
+      <button data-a="p-logout">Salir</button></nav>
+      <span class="avatar" title="${esc(p.nombre)}">${initials(p.nombre.split(',').reverse().join(' '))}</span>`:''}
+  </header>${inner}</div>`;
+}
+function pLogin(){
+  const st=S.plogin.state;
+  return `<div style="max-width:520px;margin:24px auto" class="stack lg">
+    <div class="stack" style="gap:6px">${node('p.validar')}<h1>Ingresá con tu DNI</h1><p class="muted">Validamos tu identidad para mostrarte tu turno o ayudarte a pedir uno.</p></div>
+    <form class="card raised stack" data-form="p-login">
+      <div class="field"><label for="pl-dni">Número de documento <span class="req">*</span></label>
+        <input class="input mono" id="pl-dni" inputmode="numeric" autocomplete="off" placeholder="Ej.: 44122123" value="${esc(S.plogin.dni)}"></div>
+      <button class="btn pri lg block" type="submit">Validar identidad ${I.arrow}</button>
+      ${st==='nf'?`<div class="alert warn">${I.warn}<div><b>No encontramos el DNI ${esc(S.plogin.dni)}</b><p>Para pedir un turno primero necesitamos tus datos. Lleva un minuto.</p></div></div>
+        <button class="btn block" type="button" data-a="p-goreg">Registrarme como paciente nuevo</button>`:''}
+      ${st==='bad'?`<div class="alert">${I.warn}<div><b>Revisá el número</b><p>El DNI tiene que tener 7 u 8 dígitos, sin puntos.</p></div></div>`:''}
+    </form>
+    <div class="stack" style="gap:8px"><span class="eyebrow">Probar con</span><div class="chips">
+      ${['44122123','30111222','38647762','27999555'].map(d=>`<button class="chip" data-a="fill" data-t="pl-dni" data-val="${d}"><span class="mono">${d}</span></button>`).join('')}</div></div>
+  </div>`;
+}
+function regFields(pre,r,full){
+  return `<div class="grid2">
+    <div class="field"><label for="${pre}-ape">Apellidos <span class="req">*</span></label><input class="input" id="${pre}-ape" value="${esc(r.ape||'')}" placeholder="Saccone"></div>
+    <div class="field"><label for="${pre}-nom">Nombres <span class="req">*</span></label><input class="input" id="${pre}-nom" value="${esc(r.nom||'')}" placeholder="María Facundo"></div>
+    <div class="field"><label for="${pre}-dni">DNI <span class="req">*</span></label><input class="input mono" id="${pre}-dni" inputmode="numeric" value="${esc(r.dni||'')}"></div>
+    <div class="field"><label for="${pre}-nac">Fecha de nacimiento <span class="req">*</span></label><input class="input" type="date" id="${pre}-nac" value="${esc(r.nac||'')}"></div>
+    <div class="field"><label for="${pre}-tel">Teléfono / WhatsApp <span class="req">*</span></label><input class="input mono" id="${pre}-tel" value="${esc(r.tel||'+54 9 351 ')}"></div>
+    <div class="field"><label for="${pre}-email">Correo electrónico</label><input class="input" type="email" id="${pre}-email" value="${esc(r.email||'')}" placeholder="paciente@correo.com"></div>
+    ${full?`<div class="field"><label for="${pre}-dom">Domicilio</label><input class="input" id="${pre}-dom" value="${esc(r.dom||'')}" placeholder="Av. Colón 1234, 3° B"></div>
+    <div class="field"><label for="${pre}-ocup">Actividad / ocupación</label><input class="input" id="${pre}-ocup" value="${esc(r.ocup||'')}" placeholder="Docente"></div>`:''}
+  </div>
+  <hr class="hr">
+  <span class="eyebrow">Cobertura médica</span>
+  <div class="grid3">
+    <div class="field"><label for="${pre}-os">Obra social</label><select class="input" id="${pre}-os">${['Particular / Sin obra social','OSDE','Apross','Swiss Medical','PAMI','Galeno'].map(o=>`<option ${r.os===o?'selected':''}>${o}</option>`).join('')}</select></div>
+    <div class="field"><label for="${pre}-afil">N° de afiliado</label><input class="input mono" id="${pre}-afil" value="${esc(r.afil||'')}"></div>
+    <div class="field"><label for="${pre}-plan">Plan</label><input class="input" id="${pre}-plan" value="${esc(r.plan||'')}" placeholder="210"></div>
+  </div>`;
+}
+function readReg(pre){
+  return {ape:val(pre+'-ape'),nom:val(pre+'-nom'),dni:val(pre+'-dni').replace(/\D/g,''),nac:val(pre+'-nac'),tel:val(pre+'-tel'),email:val(pre+'-email'),dom:val(pre+'-dom'),ocup:val(pre+'-ocup'),os:val(pre+'-os'),afil:val(pre+'-afil'),plan:val(pre+'-plan')};
+}
+function regErrors(r){
+  const e=[];if(!r.ape)e.push('apellido');if(!r.nom)e.push('nombre');if(!/^\d{7,8}$/.test(r.dni))e.push('DNI de 7 u 8 dígitos');if(!r.nac)e.push('fecha de nacimiento');if(r.tel.replace(/\D/g,'').length<10)e.push('teléfono completo');
+  if(S.patients.some(p=>p.dni===r.dni))e.push('un DNI que no esté registrado');return e;
+}
+function createPatient(r,anam){
+  const id='p'+(S.patients.length+1+Math.floor(Math.random()*1000));
+  const p={id,hc:`HC-2026-${String(200+S.patients.length).padStart(3,'0')}`,nombre:`${r.ape}, ${r.nom}`,dni:r.dni,nac:r.nac,tel:r.tel,email:r.email,dom:r.dom||'',loc:'Córdoba',os:r.os,afil:r.afil,ocup:r.ocup||'',
+    conds:anam?.conds||[],alergia:anam?.alergia||'No informado',meds:anam?.meds||'No informado',fuma:anam?.fuma||'No informado'};
+  S.patients.push(p);return p;
+}
+function pRegister(){
+  const r=S.preg||{};
+  return `<div style="max-width:760px;margin:0 auto" class="stack lg">
+    <div class="stack" style="gap:6px">${node('p.registrar')}<h1>Tus datos</h1><p class="muted">Con esto armamos tu ficha. El cuestionario de salud lo completás con el profesional en tu primera consulta.</p></div>
+    <form class="card raised stack" data-form="p-reg">
+      ${regFields('pr',r,false)}
+      ${r.err?`<div class="alert">${I.warn}<div><b>Faltan datos</b><p>Completá: ${esc(r.err.join(', '))}.</p></div></div>`:''}
+      <div class="row between"><button class="btn" type="button" data-a="nav" data-v="p.login">${I.back} Volver</button><button class="btn pri" type="submit">Guardar y ver turnos ${I.arrow}</button></div>
+    </form></div>`;
+}
+function pHome(){
+  const p=pac(S.pUser),t=nextTurnoOf(p.id),c=colaOf(p.id);
+  const first=p.nombre.split(',')[1]?.trim().split(' ')[0];
+  let main='';
+  if(c&&c.estado!=='finalizado'){
+    const pr=prof(c.prof),{pos,wait}=queuePos(c);const at=c.estado==='atendiendo';
+    main=`<div class="card raised stack lg">
+      <div class="row between">${node('p.cola')}<span class="pill ${at?'ok':'acc'}"><span class="dot"></span>${at?'Te están llamando':'En sala de espera'}</span></div>
+      <div class="qhero">
+        <div class="qnum">${at?'Ahora':pos+'°'}</div>
+        <div class="stack" style="gap:4px">
+          <h2>${at?`Pasá a ${esc(pr.box)}`:`Hay ${pos-1} ${pos-1===1?'persona':'personas'} antes que vos`}</h2>
+          <p class="muted">${at?`${esc(pr.nombre)} te está esperando.`:`Demora estimada: <b>~${wait} min</b> · Llegaste ${c.llegada} h`}</p>
+        </div>
+      </div>
+      <div class="track"><div class="on">Recepción</div><div class="${'on'}">En espera</div><div class="${at?'on':''}">Llamado</div><div>Atendido</div></div>
+      <p class="muted small">Cada turno dura 30 minutos aprox. La demora se recalcula cuando el profesional llama al siguiente paciente.</p>
+    </div>`;
+  } else if(t){
+    const pr=prof(t.prof);const isToday=t.fecha===TODAY;
+    main=`<div class="card raised stack lg">
+      <div class="row between">${node('p.tiene')}<span class="pill ok"><span class="dot"></span>Confirmado</span></div>
+      <div class="stack" style="gap:4px"><span class="eyebrow">Tu próximo turno</span><h1>${fmtLong(t.fecha)} · ${t.hora} h</h1><p class="muted">${esc(pr.nombre)} · ${esc(t.tipo)} · ${SEDE}</p></div>
+      ${isToday?`<div class="alert info">${I.bell}<div><b>Tu turno es hoy</b><p>Cuando llegues, anunciate en recepción. Ahí te sumamos a la cola y desde acá vas a ver tu posición y la demora.</p></div></div>`
+        :`<div class="alert info">${I.cal}<div><b>Te esperamos el ${fmtLong(t.fecha).toLowerCase()}</b><p>El día del turno vas a poder ver tu posición en la cola desde esta pantalla.</p></div></div>`}
+      <div class="row"><span class="muted small">Código <span class="mono">${t.id}</span></span><span class="sp" style="flex:1"></span><button class="btn sm" data-a="p-newbook">Pedir otro turno</button></div>
+    </div>`;
+  } else {
+    main=`<div class="card raised"><div class="empty">${node('p.tiene')}<p class="big" style="margin-top:12px">No tenés turnos pendientes</p><p>Elegí profesional, día y horario. La confirmación te llega por WhatsApp.</p><div style="margin-top:18px"><button class="btn pri lg" data-a="p-newbook">Ver turnos disponibles ${I.arrow}</button></div></div></div>`;
+  }
+  const hist=S.hc.filter(h=>h.pac===p.id).slice(0,3);
+  const msgs=S.wa.filter(m=>m.pac===p.id).slice(-1);
+  return `<div class="stack lg">
+    <div><h1>Hola, ${esc(first)}</h1><p class="muted">HC <span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span></p></div>
+    <div class="qhero-wrap">${main}
+      <div class="stack">
+        <div class="card stack"><h3>Últimas atenciones</h3>${hist.length?hist.map(h=>`<div class="row between"><div><b>${esc(h.motivo)}</b><br><span class="muted small">${esc(prof(h.prof).nombre)}</span></div><span class="mono muted">${fmtShort(h.fecha)}</span></div>`).join('<hr class="hr">'):'<p class="muted">Todavía no tenés atenciones registradas.</p>'}</div>
+        ${msgs.length?`<div class="card stack"><h3>Último mensaje</h3>${waBox(msgs[0])}</div>`:''}
+      </div>
+    </div></div>`;
+}
+function bookSteps(step){
+  const L=['Profesional','Fecha y horario','Confirmar'];
+  return `<div class="steps">${L.map((l,i)=>`${i?'<span class="sep"></span>':''}<span class="st ${i+1===step?'on':i+1<step?'done':''}"><b>${i+1<step?'✓':i+1}</b>${l}</span>`).join('')}</div>`;
+}
+function pBook(){
+  const b=S.book;const p=pac(S.pUser);
+  let body='';
+  if(b.step===1){
+    const list=PROFS.filter(x=>!b.tipo||x.tipos.includes(b.tipo));
+    body=`<div class="card raised stack lg">
+      <div class="grid2"><div class="field"><label for="bk-tipo">Tipo de atención</label><select class="input" id="bk-tipo" data-change="bk-tipo"><option value="">Todas</option>${TIPOS.map(t=>`<option ${b.tipo===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="field"><label>Sede</label><div class="input" style="background:transparent">${SEDE}</div></div></div>
+      <div class="list">${list.map(x=>`<div class="lrow ${b.prof===x.id?'hl':''}"><span class="avatar">${initials(x.nombre.replace(/^(Dra?\.)\s/,''))}</span><div class="grow"><b>${x.nombre}</b><br><span class="muted small">${x.esp} · ${x.mat} · Atiende ${x.dias.map(d=>DOW[d].slice(0,3)).join(', ')}</span></div>
+        <button class="btn ${b.prof===x.id?'pri':''} sm" data-a="bk-prof" data-id="${x.id}">${b.prof===x.id?'Seleccionado':'Elegir'}</button></div>`).join('')}</div>
+      <div class="row between"><button class="btn" data-a="nav" data-v="p.home">Cancelar</button><button class="btn pri" data-a="bk-step" data-s="2" ${b.prof?'':'disabled'}>Continuar ${I.arrow}</button></div></div>`;
+  } else if(b.step===2){
+    const pr=prof(b.prof);const m=b.month;const first=new Date(m.getFullYear(),m.getMonth(),1);
+    const lead=(first.getDay()+6)%7;const dim=new Date(m.getFullYear(),m.getMonth()+1,0).getDate();
+    let cells='';for(let i=0;i<lead;i++)cells+='<button class="out" tabindex="-1" aria-hidden="true"></button>';
+    for(let d=1;d<=dim;d++){const s=iso(new Date(m.getFullYear(),m.getMonth(),d));const st=dayState(b.prof,s);
+      cells+=`<button class="${st} ${b.fecha===s?'sel':''} ${s===TODAY?'today':''}" ${['ok','few'].includes(st)?`data-a="bk-day" data-d="${s}"`:'disabled'} aria-label="${fmtLong(s)}">${d}</button>`;}
+    const canPrev=m>new Date(parse(TODAY).getFullYear(),parse(TODAY).getMonth(),1);
+    const sl=b.fecha?slotsFor(b.prof,b.fecha):[];const am=sl.filter(t=>t<'13:00'),pm=sl.filter(t=>t>='13:00');
+    body=`<div class="sum"><div><span class="avatar">${initials(pr.nombre.replace(/^(Dra?\.)\s/,''))}</span><div><b>${pr.nombre}</b><small>${pr.esp} · ${pr.mat}</small></div></div>
+      <div>${I.clip}<div><b>${esc(b.tipo||'Consulta y revisión')}</b><small>30 minutos · Presencial</small></div></div>
+      <div>${I.pin}<div><b>Sede Centro</b><small>Av. Colón 1234, Córdoba</small></div></div>
+      <button class="link" style="margin-left:auto" data-a="bk-step" data-s="1">Cambiar</button></div>
+    <div class="book-grid">
+      <div class="card raised stack">
+        <div class="row between"><div><h2>${cap(MON[m.getMonth()])} ${m.getFullYear()}</h2><p class="muted small">Elegí un día con disponibilidad</p></div>
+          <div class="row" style="gap:6px"><button class="btn sm" data-a="bk-month" data-dir="-1" ${canPrev?'':'disabled'} aria-label="Mes anterior">‹</button><button class="btn sm" data-a="bk-month" data-dir="1" aria-label="Mes siguiente">›</button></div></div>
+        <div class="cal">${['lun','mar','mié','jue','vie','sáb','dom'].map(x=>`<span class="h">${x}</span>`).join('')}${cells}</div>
+        <div class="legend"><span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i>Disponible</span><span><i style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Pocos turnos</span><span><i style="background:var(--bad-soft);border:1px solid var(--bad)"></i>Sin turnos</span><span><i style="border:1px solid var(--line)"></i>Sin atención</span></div>
+      </div>
+      <div class="card raised stack">
+        <div><h2>Horario</h2><p class="muted small">${b.fecha?fmtLong(b.fecha):'Primero elegí un día'}</p></div>
+        ${b.fecha?`${am.length?`<span class="eyebrow">Por la mañana</span><div class="slots">${am.map(t=>`<button class="${b.hora===t?'sel':''}" data-a="bk-hora" data-h="${t}">${t}</button>`).join('')}</div>`:''}
+          ${pm.length?`<span class="eyebrow">Por la tarde</span><div class="slots">${pm.map(t=>`<button class="${b.hora===t?'sel':''}" data-a="bk-hora" data-h="${t}">${t}</button>`).join('')}</div>`:''}
+          <p class="muted small">Hora de Córdoba (GMT-3) · turnos de 30 min</p>`:`<div class="empty" style="padding:24px 0">${I.cal}<p>Los días en verde tienen más horarios libres.</p></div>`}
+        ${b.hora?`<div class="alert info">${I.cal}<div><b>${fmtLong(b.fecha)} · ${b.hora} h</b><p>${pr.nombre} · ${esc(b.tipo||'Consulta y revisión')}</p></div></div>`:''}
+        <button class="btn pri block" data-a="bk-step" data-s="3" ${b.hora?'':'disabled'}>Continuar con mis datos ${I.arrow}</button>
+      </div></div>`;
+  } else {
+    const pr=prof(b.prof);
+    body=`<div class="book-grid">
+      <div class="card raised stack">
+        <h2>Datos del paciente</h2><p class="muted small">Revisá que estén bien. A este número te enviamos la constancia.</p>
+        <div class="kv"><div><span>Paciente</span>${esc(p.nombre)}</div><div><span>DNI</span><span class="mono">${p.dni}</span></div><div><span>Historia clínica</span><span class="mono">${p.hc}</span></div><div><span>Cobertura</span>${esc(p.os)}</div></div>
+        <div class="field"><label for="bk-tel">WhatsApp para la constancia</label><input class="input mono" id="bk-tel" value="${esc(p.tel)}"></div>
+        <div class="field"><label for="bk-nota">Motivo de consulta (opcional)</label><textarea class="input" id="bk-nota" placeholder="Ej.: me duele una muela al masticar"></textarea></div>
+      </div>
+      <div class="card raised stack">
+        ${node('p.solicitar')}
+        <span class="eyebrow">Resumen</span>
+        <h2>${fmtLong(b.fecha)} · ${b.hora} h</h2>
+        <p class="muted">${pr.nombre}<br>${esc(b.tipo||'Consulta y revisión')} · 30 min<br>${SEDE}</p>
+        <div class="alert warn">${I.warn}<div><b>Cancelación</b><p>Si no podés venir, avisá con 24 h de anticipación respondiendo el WhatsApp.</p></div></div>
+        <button class="btn pri lg block" data-a="bk-confirm">Solicitar turno</button>
+        <button class="btn block" data-a="bk-step" data-s="2">${I.back} Cambiar horario</button>
+      </div></div>`;
+  }
+  return `<div class="stack lg"><div class="phead"><div>${node('p.turnos')}<h1 style="margin-top:6px">Turnos disponibles</h1><p>Elegí el profesional, el día y el horario que mejor te queden.</p></div>${bookSteps(b.step)}</div>${body}</div>`;
+}
+function pDone(){
+  const t=turno(S.book.done),p=pac(t.pac),pr=prof(t.prof);const m=S.wa.filter(x=>x.pac===p.id).slice(-1)[0];
+  return `<div style="max-width:880px;margin:0 auto" class="stack lg">
+    <div class="stack" style="gap:6px">${node('p.constancia')}<h1>Listo, tu turno está confirmado</h1><p class="muted">Te enviamos la constancia por WhatsApp al <span class="mono">${esc(p.tel)}</span>.</p></div>
+    <div class="grid2">
+      <div class="card raised stack">
+        <div class="row between"><span class="eyebrow">Constancia de turno</span><span class="pill ok"><span class="dot"></span>Confirmado</span></div>
+        <h2>${fmtLong(t.fecha)} · ${t.hora} h</h2>
+        <div class="kv"><div><span>Código</span><span class="mono">${t.id}</span></div><div><span>Profesional</span>${pr.nombre}</div><div><span>Atención</span>${esc(t.tipo)}</div><div><span>Sede</span>Sede Centro</div><div><span>Paciente</span>${esc(p.nombre)}</div><div><span>DNI</span><span class="mono">${p.dni}</span></div></div>
+        <div class="row"><button class="btn pri" data-a="nav" data-v="p.home">Ir a mi turno</button></div>
+      </div>
+      ${m?waBox(m):''}
+    </div></div>`;
+}
+
+/* ======================= STAFF ======================= */
+function vStaff(){
+  const isO=S.role==='odontologo';const v=S.view;
+  if(v==='o.login') return oLogin();
+  if(v==='s.login') return sLogin();
+  const items=isO?[['o.queue','Cola de pacientes',I.queue,queueFor(S.oUser).length],['o.agenda','Agenda de hoy',I.cal],['o.hcl','Historial clínico',I.clip]]
+    :[['s.reception','Recepción',I.door],['s.queue','Cola de espera',I.queue,S.cola.filter(c=>c.estado!=='finalizado').length+S.salida.length],['s.patients','Pacientes',I.users],['s.agenda','Turnos',I.cal],['s.hcl','Historial clínico',I.clip]];
+  const sec={'s.register':'s.patients','s.patient':'s.patients','s.hcp':'s.hcl','s.close':'s.queue','o.patient':'o.queue','o.attend':'o.queue','o.next':'o.queue','o.hcp':'o.hcl'}[v]||v;
+  const who=isO?prof(S.oUser):{nombre:'Ana Ríos',esp:'Recepción'};
+  const views={'o.queue':oQueue,'o.patient':oPatient,'o.attend':oAttend,'o.next':oNext,'o.agenda':agenda,'o.hcl':hcList,'o.hcp':hcPersonal,
+    's.reception':sReception,'s.queue':sQueue,'s.patients':sPatients,'s.patient':sPatient,'s.register':sRegister,'s.agenda':agenda,'s.hcl':hcList,'s.hcp':hcPersonal,'s.close':sClose};
+  return `<div class="swrap"><div class="sshell"><aside class="side">${brand(isO?'Panel profesional':'Recepción')}
+    <nav aria-label="Secciones">${items.map(([k,l,ic,b])=>`<button data-a="nav" data-v="${k}" aria-current="${sec===k}">${ic}${l}${b?`<span class="badge">${b}</span>`:''}</button>`).join('')}</nav>
+    <div class="who"><span class="avatar">${initials(who.nombre.replace(/^(Dra?\.)\s/,''))}</span><div style="min-width:0"><b class="small">${who.nombre}</b><br><span class="muted small">${who.esp}</span></div><button class="link" data-a="logout" title="Salir" aria-label="Salir">${I.out}</button></div>
+  </aside><main class="main"><div class="main-in">${(views[v]||(()=>''))()}</div></main></div></div>`;
+}
+function oLogin(){
+  return `<main class="home" style="max-width:760px">${brand('Panel profesional')}
+    <div class="stack" style="gap:6px">${node('o.acceso')}<h1>¿Quién atiende hoy?</h1><p class="muted">Elegí tu usuario para ver tu cola de pacientes.</p></div>
+    <div class="list">${PROFS.map(p=>{const n=queueFor(p.id).length;return `<div class="lrow click" data-a="o-enter" data-id="${p.id}"><span class="avatar">${initials(p.nombre.replace(/^(Dra?\.)\s/,''))}</span><div class="grow"><b>${p.nombre}</b><br><span class="muted small">${p.esp} · ${p.box}</span></div><span class="pill ${n?'acc':''}">${n} en cola</span>${I.arrow}</div>`}).join('')}</div></main>`;
+}
+function sLogin(){
+  return `<main class="home" style="max-width:520px">${brand('Recepción')}
+    <div class="stack" style="gap:6px">${node('s.acceso')}<h1>Ingreso de secretaría</h1></div>
+    <form class="card raised stack" data-form="s-login">
+      <div class="field"><label for="sl-user">Usuario</label><input class="input" id="sl-user" value="arios" autocomplete="username"></div>
+      <button class="btn pri lg block" type="submit">Ingresar como Ana Ríos</button></form></main>`;
+}
+
+/* ---- odontólogo ---- */
+function oQueue(){
+  const pr=prof(S.oUser);const q=queueFor(S.oUser);const cur=q.find(c=>c.estado==='atendiendo');const wait=q.filter(c=>c.estado==='espera');
+  const done=S.salida.filter(s=>s.prof===S.oUser).length+S.cola.filter(c=>c.prof===S.oUser&&c.estado==='finalizado').length;
+  return `<div class="phead"><div>${node('o.hay')}<h1 style="margin-top:6px">Cola de pacientes</h1><p>${cap(fmtLong(TODAY))} · ${pr.box}</p></div>
+    <div class="row"><span class="pill acc">${wait.length} en espera</span><span class="pill">${done} atendidos hoy</span></div></div>
+  ${cur?`<div class="callbanner">${I.bell}<div class="grow"><b>En atención: ${esc(pac(cur.pac).nombre)}</b><br><span class="small">Marcado como "Siendo atendido" desde las ${cur.llamado||'—'} h</span></div><button class="btn" data-a="o-open" data-id="${cur.id}">Continuar atención ${I.arrow}</button></div>`:''}
+  ${wait.length?`<div class="list">${wait.map((c,i)=>{const p=pac(c.pac),t=turno(c.turno);const alerts=alertsOf(p);
+    return `<div class="lrow ${i===0&&!cur?'hl':''}"><span class="pos">${i+1}</span><div class="grow"><b>${esc(p.nombre)}</b><br><span class="muted small">${esc(t?.tipo||'Consulta')} · turno ${t?.hora||'—'} · llegó ${c.llegada} h · ${esc(p.os)}</span></div>
+      ${alerts.length?`<span class="pill bad">${I.warn} ${alerts.length} alerta${alerts.length>1?'s':''}</span>`:''}
+      <span class="muted small mono">espera ~${queuePos(c).wait} min</span>
+      <button class="btn ${i===0&&!cur?'pri':''} sm" data-a="o-call" data-id="${c.id}" ${cur?'disabled title="Terminá la atención en curso"':''}>Llamar</button></div>`}).join('')}</div>`
+  :(!cur?`<div class="card"><div class="empty"><p class="big">No hay pacientes en cola</p><p>Cuando recepción agregue a alguien, aparece acá. Podés probarlo desde el rol Secretaría.</p><div class="row" style="justify-content:center;margin-top:16px"><button class="btn" data-a="role" data-r="secretario">Ir a Secretaría</button></div></div></div>`:'')}
+  `;
+}
+function alertsOf(p){const a=[];if(p.alergia&&!/^no/i.test(p.alergia))a.push('Alergia: '+p.alergia);p.conds.filter(c=>ALERT_CONDS.includes(c)).forEach(c=>a.push(c));return a}
+function patientInfo(p,opts={}){
+  const alerts=alertsOf(p);const hist=S.hc.filter(h=>h.pac===p.id);const nt=nextTurnoOf(p.id);
+  return `${alerts.length?`<div class="alert">${I.warn}<div><b>Alerta médica</b><p>${esc(alerts.join(' · '))}</p></div></div>`:''}
+  <div class="grid2">
+    <div class="card stack"><h3>Datos personales y contacto</h3>
+      <div class="kv"><div><span>DNI</span><span class="mono">${p.dni}</span></div><div><span>Edad</span>${age(p.nac)} años</div><div><span>Ocupación</span>${esc(p.ocup||'—')}</div><div><span>Teléfono</span><span class="mono">${esc(p.tel)}</span></div><div><span>Correo</span>${esc(p.email||'—')}</div><div><span>Domicilio</span>${esc(p.dom||'—')}</div></div></div>
+    <div class="card stack"><h3>Antecedentes médicos</h3>
+      <div class="kv"><div><span>Condiciones</span>${p.conds.length?esc(p.conds.join(', ')):'Sin antecedentes'}</div><div><span>Alergias</span>${esc(p.alergia)}</div><div><span>Medicación</span>${esc(p.meds)}</div><div><span>Fuma</span>${esc(p.fuma)}</div></div></div>
+    <div class="card stack"><h3>Cobertura</h3><div class="kv"><div><span>Obra social</span>${esc(p.os)}</div><div><span>N° afiliado</span><span class="mono">${esc(p.afil||'—')}</span></div></div></div>
+    <div class="card stack"><h3>Próximo turno</h3>${nt?`<p><b>${fmtLong(nt.fecha)} · ${nt.hora} h</b><br><span class="muted small">${prof(nt.prof).nombre} · ${esc(nt.tipo)}</span></p>`:'<p class="muted">Sin turnos pendientes</p>'}</div>
+  </div>
+  ${opts.hist!==false?`<div class="card stack"><div class="row between"><h3>Últimas atenciones</h3><span class="muted small">${hist.length} registros</span></div>
+    ${hist.length?hist.slice(0,3).map(h=>`<div class="row between"><div style="min-width:0"><b>${esc(h.motivo)}</b> · <span class="muted">${esc(h.proc)}</span><br><span class="muted small">${esc(prof(h.prof).nombre)} · piezas <span class="mono">${esc(h.piezas)}</span></span></div><span class="mono muted">${fmtShort(h.fecha)}</span></div>`).join('<hr class="hr">'):'<p class="muted">Primera consulta.</p>'}</div>`:''}`;
+}
+function oPatient(){
+  const c=S.cola.find(x=>x.id===S.att.cola);const p=pac(c.pac);const pr=prof(c.prof);
+  return `<div class="callbanner">${I.bell}<div class="grow"><b>Llamaste a ${esc(p.nombre)}</b><br><span class="small">Pantalla de sala: "${esc(p.nombre.split(',')[0])} — ${pr.box}" · Estado: Siendo atendido</span></div><button class="btn" data-a="o-recall">Volver a llamar</button></div>
+  <div class="phead"><div><div class="row" style="gap:6px">${node('o.llamar')}${node('o.info')}</div><h1 style="margin-top:6px">${esc(p.nombre)}</h1><p><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${age(p.nac)} años</p></div>
+    <div class="row"><button class="btn" data-a="o-hcp" data-id="${p.id}">Ver historial completo</button><button class="btn pri" data-a="o-start">Iniciar atención ${I.arrow}</button></div></div>
+  ${patientInfo(p)}`;
+}
+function oAttend(){
+  const a=S.att;const c=S.cola.find(x=>x.id===a.cola);const p=pac(c.pac);const t=turno(c.turno);
+  const up=[18,17,16,15,14,13,12,11,0,21,22,23,24,25,26,27,28],lo=[48,47,46,45,44,43,42,41,0,31,32,33,34,35,36,37,38];
+  const row=(arr,cls)=>`<div class="r ${cls}">${arr.map(n=>n?`<button type="button" class="${a.teeth.includes(n)?'sel':''}" data-a="tooth" data-n="${n}" aria-pressed="${a.teeth.includes(n)}">${n}</button>`:'<span class="mid"></span>').join('')}</div>`;
+  const alerts=alertsOf(p);
+  return `<div class="phead"><div><div class="row" style="gap:6px">${node('o.atender')}${node('o.hc')}</div><h1 style="margin-top:6px">Atención · ${esc(p.nombre)}</h1><p>${esc(t?.tipo||'Consulta')} · ${cap(fmtLong(TODAY))}</p></div>
+    <span class="pill ok"><span class="dot"></span>Siendo atendido</span></div>
+  ${alerts.length?`<div class="alert">${I.warn}<div><b>Alerta médica</b><p>${esc(alerts.join(' · '))}</p></div></div>`:''}
+  <form class="card raised stack lg" data-form="o-hc">
+    <div class="stack"><div class="row between"><h3>Piezas tratadas</h3><span class="muted small">Notación FDI · tocá para marcar</span></div>
+      <div class="odo">${row(up,'')}${row(lo,'low')}</div>
+      <p class="small">Seleccionadas: <span class="mono">${a.teeth.length?a.teeth.join(', '):'ninguna'}</span></p></div>
+    <div class="grid2">
+      <div class="field"><label for="at-motivo">Motivo</label><select class="input" id="at-motivo">${TIPOS.map(x=>`<option ${(a.motivo||t?.tipo)===x?'selected':''}>${x}</option>`).join('')}</select></div>
+      <div class="field"><label for="at-proc">Procedimiento realizado <span class="req">*</span></label><input class="input" id="at-proc" value="${esc(a.proc||'')}" placeholder="Ej.: Obturación compuesta clase I"></div>
+      <div class="field"><label for="at-diag">Diagnóstico</label><input class="input" id="at-diag" value="${esc(a.diag||'')}" placeholder="Ej.: Caries oclusal"></div>
+      <div class="field"><label for="at-ind">Indicaciones al paciente</label><input class="input" id="at-ind" value="${esc(a.ind||'')}" placeholder="Ej.: No comer por 2 h"></div>
+    </div>
+    <div class="field"><label for="at-notas">Notas clínicas</label><textarea class="input" id="at-notas">${esc(a.notas||'')}</textarea></div>
+    ${a.err?`<div class="alert">${I.warn}<div><b>Falta el procedimiento</b><p>Escribí qué se hizo para poder guardar la historia clínica.</p></div></div>`:''}
+    <div class="row between"><button class="btn" type="button" data-a="nav" data-v="o.patient">${I.back} Ficha</button><button class="btn pri" type="submit">Guardar historia clínica ${I.arrow}</button></div>
+  </form>`;
+}
+function oNext(){
+  const a=S.att;const c=S.cola.find(x=>x.id===a.cola);const p=pac(c.pac);
+  let body='';
+  if(a.need===undefined){
+    body=`<div class="card raised stack lg">${node('o.necesita')}<h2>¿${esc(p.nombre.split(',')[1]||p.nombre)} necesita un turno de seguimiento?</h2>
+      <div class="row"><button class="btn pri lg" data-a="o-need" data-v="1">Sí, ofrecer turnos</button><button class="btn lg" data-a="o-need" data-v="0">No, finalizar</button></div></div>`;
+  } else if(a.need){
+    body=`<div class="card raised stack lg">${offerPanel()}</div>`;
+  }
+  const canQuit=a.need===false||(S.offer&&(S.offer.result||S.offer.ended));
+  return `<div class="phead"><div><span class="pill ok">${I.check} Historia clínica guardada</span><h1 style="margin-top:8px">Cierre de la atención</h1><p>${esc(p.nombre)}</p></div></div>
+  ${body}
+  ${canQuit?`<div class="card stack">${node('o.quitar')}<div class="row between"><p>El paciente sale de tu cola y recepción completa el cierre administrativo.</p><button class="btn pri" data-a="o-quit">Quitar de la cola y llamar al siguiente ${I.arrow}</button></div></div>`:''}`;
+}
+
+/* ---- offer panel (shared by odontólogo y secretaría) ---- */
+function offerPanel(){
+  const o=S.offer;const p=pac(o.pac);const pre=o.ctx==='o'?'o':'s';
+  if(o.result){const t=turno(o.result);const m=S.wa.filter(x=>x.pac===p.id).slice(-1)[0];
+    return `<div class="row" style="gap:6px">${node(pre+'.acepta')}${pre==='s'?node('s.constancia'):''}</div>
+    <div class="grid2"><div class="stack"><span class="pill ok" style="align-self:flex-start">${I.check} Turno asignado</span><h2>${fmtLong(t.fecha)} · ${t.hora} h</h2><p class="muted">${prof(t.prof).nombre} · ${esc(t.tipo)} · código <span class="mono">${t.id}</span></p>
+      <p class="small muted">Constancia enviada a <span class="mono">${esc(p.tel)}</span></p>
+      ${o.ctx!=='o'?`<div><button class="btn pri" data-a="offer-finish">Finalizar</button></div>`:''}</div>${m?waBox(m):''}</div>`;}
+  if(o.ended) return `${node(pre+'.mas')}<div class="alert warn">${I.warn}<div><b>Sin turno asignado</b><p>${esc(p.nombre)} no aceptó las opciones. Puede pedir uno más adelante desde el portal del paciente.</p></div></div>${o.ctx!=='o'?`<div><button class="btn pri" data-a="offer-finish">Finalizar</button></div>`:''}`;
+  if(o.asking) return `<div class="stack">${node(pre+'.mas')}<h2>¿Buscar más opciones?</h2><p class="muted">Podés mostrar los siguientes días disponibles o cambiar de profesional.</p>
+    <div class="row"><button class="btn pri" data-a="offer-more">Sí, ver más opciones</button><button class="btn" data-a="offer-stop">No, terminar sin turno</button></div></div>`;
+  const sl=offerSlots(o.prof,o.page);
+  return `<div class="stack">${node(pre+'.ofrecer')}
+    <div class="row between"><div><h2>Turnos disponibles para ${esc(p.nombre)}</h2><p class="muted small">Opciones ${o.page*3+1}–${o.page*3+sl.length} · ofrecéselas al paciente</p></div>
+      <div class="field" style="min-width:220px"><label for="of-prof">Profesional</label><select class="input" id="of-prof" data-change="offer-prof">${PROFS.map(x=>`<option value="${x.id}" ${o.prof===x.id?'selected':''}>${x.nombre} · ${x.esp}</option>`).join('')}</select></div></div>
+    <div class="field" style="max-width:320px"><label for="of-tipo">Tipo de atención</label><select class="input" id="of-tipo" data-change="offer-tipo">${prof(o.prof).tipos.map(x=>`<option ${o.tipo===x?'selected':''}>${x}</option>`).join('')}</select></div>
+    <div class="offer">${sl.map((s,i)=>`<div class="o"><span class="eyebrow">Opción ${o.page*3+i+1}</span><span class="d">${fmtLong(s.fecha)}</span><span class="mono">${s.hora} h</span><button class="btn pri sm" data-a="offer-accept" data-f="${s.fecha}" data-h="${s.hora}">Acepta este turno</button></div>`).join('')||'<p class="muted">Sin disponibilidad en los próximos 90 días.</p>'}</div>
+    <div><button class="btn" data-a="offer-reject">No acepta ninguno</button></div></div>`;
+}
+function startOffer(pid,ctx,profId){S.offer={pac:pid,ctx,prof:profId||'L',tipo:prof(profId||'L').tipos[0],page:0};visit(ctx==='o'?'o.ofrecer':'s.ofrecer')}
+
+/* ---- secretaría ---- */
+function sReception(){
+  const r=S.rec;let res='';
+  if(r.res){
+    const p=r.pac&&pac(r.pac);
+    const step=(cls,label,content)=>`<div class="dstep ${cls}"><span class="q"><span>${cls==='yes'?'SÍ':cls==='no'?'NO':'?'}</span></span><div class="stack" style="gap:6px;padding-top:3px"><b>${label}</b>${content||''}</div></div>`;
+    let steps='';
+    if(r.res==='nf'){
+      steps=step('no','¿Registrado?',`<p class="muted">No hay ningún paciente con DNI <span class="mono">${esc(r.q)}</span>.</p><div><button class="btn pri" data-a="s-goreg">Registrar datos del paciente ${I.arrow}</button></div>`);
+    } else {
+      const t=nextTurnoOf(p.id);const c=colaOf(p.id);
+      steps=step('yes','¿Registrado?',`<div class="lrow"><span class="avatar">${initials(p.nombre.split(',').reverse().join(' '))}</span><div class="grow"><b>${esc(p.nombre)}</b><br><span class="muted small"><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${esc(p.os)}</span></div><button class="btn sm" data-a="s-open" data-id="${p.id}">Ver ficha</button></div>`);
+      if(c&&c.estado!=='finalizado'){
+        steps+=step('yes','¿Tiene turno?',`<div class="alert info">${I.queue}<div><b>Ya está en la cola</b><p>${c.estado==='atendiendo'?'Está siendo atendido.':`Posición ${queuePos(c).pos} con ${prof(c.prof).nombre}.`}</p></div></div>`);
+      } else if(!t){
+        steps+=step('no','¿Tiene turno?',`<p class="muted">No tiene turnos pendientes.</p>${S.offer&&S.offer.ctx==='s'?'':`<div><button class="btn pri" data-a="s-offer">Ofrecer turnos disponibles ${I.arrow}</button></div>`}`);
+      } else {
+        steps+=step('yes','¿Tiene turno?',`<p><b>${fmtLong(t.fecha)} · ${t.hora} h</b> <span class="muted">· ${prof(t.prof).nombre} · ${esc(t.tipo)} · <span class="mono">${t.id}</span></span></p>`);
+        if(!r.val){steps+=step('cur','Validar turno',`<p class="muted small">Se controla fecha, estado y profesional del turno.</p><div><button class="btn pri" data-a="s-validate">Validar turno</button></div>`);}
+        else if(r.val.ok){
+          steps+=step('yes','¿Es válido?',`<div class="alert ok">${I.check}<div><b>Turno válido</b><p>${esc(r.val.msg)}</p></div></div>`);
+          steps+=step('cur','Agregar paciente a cola',`<div class="row"><button class="btn pri" data-a="s-addq">Agregar a la cola de ${esc(prof(t.prof).nombre)}</button><label class="row small" style="gap:6px"><input type="checkbox" id="rc-wa" checked> Avisar por WhatsApp</label></div>`);
+        } else {
+          steps+=step('no','¿Es válido?',`<div class="alert">${I.warn}<div><b>Turno no válido</b><p>${esc(r.val.msg)}</p></div></div>`);
+          steps+=step(r.informed?'yes':'cur','Informar situación',r.informed?`<p class="muted">Situación informada al paciente. Fin del circuito.</p><div><button class="btn" data-a="s-clear">Atender a otra persona</button></div>`
+            :`<div class="card flat" style="padding:12px;background:var(--surface-2)"><span class="eyebrow">Qué decirle</span><p>"${esc(r.val.script)}"</p></div><div><button class="btn pri" data-a="s-inform">Situación informada</button></div>`);
+        }
+      }
+    }
+    res=`<div class="card raised"><div class="dtrack">${steps}</div></div>
+      ${S.offer&&S.offer.ctx==='s'?`<div class="card raised">${offerPanel()}</div>`:''}`;
+  }
+  return `<div class="phead"><div>${node('s.llegada')}<h1 style="margin-top:6px">Recepción</h1><p>Buscá a la persona que llegó para validar su turno o darle uno.</p></div>
+    <div class="row"><button class="btn pri" data-a="s-goreg">${I.plus} Registrar nuevo paciente</button></div></div>
+  <form class="card stack" data-form="s-search">
+    <div class="field"><label for="rc-q">Nombre o DNI del paciente</label>
+      <div class="row" style="flex-wrap:nowrap"><input class="input" id="rc-q" value="${esc(r.q)}" placeholder="Ej.: Juan Carlos o 38647762" autocomplete="off"><button class="btn pri" type="submit">${I.search} Buscar</button></div></div>
+    <div class="chips">${['44122123','35012987','30111222','27999555'].map(d=>`<button type="button" class="chip" data-a="s-try" data-val="${d}"><span class="mono">${d}</span></button>`).join('')}</div>
+  </form>
+  ${res}
+  ${!r.res?`<div class="card stack"><div class="row between"><h3>Esperados hoy</h3><span class="muted small">Turnos confirmados que todavía no llegaron</span></div>
+    ${(()=>{const l=S.turnos.filter(t=>t.fecha===TODAY&&t.estado==='confirmado'&&!colaOf(t.pac)).sort((a,b)=>a.hora.localeCompare(b.hora));
+      return l.length?`<div class="list">${l.map(t=>`<div class="lrow click" data-a="s-try" data-val="${pac(t.pac).dni}"><span class="mono">${t.hora}</span><div class="grow"><b>${esc(pac(t.pac).nombre)}</b><br><span class="muted small">${prof(t.prof).nombre} · ${esc(t.tipo)}</span></div><span class="link">Recibir ${I.arrow}</span></div>`).join('')}</div>`:'<p class="muted">Todos los pacientes del día ya llegaron.</p>'})()}</div>`:''}`;
+}
+function sRegister(){
+  const g=S.reg;
+  if(g.step===1) return `<div class="phead"><div>${node('s.registra')}<h1 style="margin-top:6px">Registrar paciente</h1></div>
+    <div class="steps"><span class="st on"><b>1</b>Datos personales y cobertura</span><span class="sep"></span><span class="st"><b>2</b>Cuestionario de salud</span></div></div>
+    <form class="card raised stack" data-form="s-reg1">
+      <div class="field" style="max-width:240px"><label>N° de historia clínica</label><div class="input mono" style="background:transparent">Se asigna al guardar</div></div>
+      ${regFields('sr',g.d,true)}
+      ${g.err?`<div class="alert">${I.warn}<div><b>Faltan datos</b><p>Completá: ${esc(g.err.join(', '))}.</p></div></div>`:''}
+      <div class="row between"><button class="btn" type="button" data-a="nav" data-v="${g.from||'s.reception'}">Cancelar</button><button class="btn pri" type="submit">Continuar a anamnesis ${I.arrow}</button></div>
+    </form>`;
+  const a=g.a;
+  const seg=(k,opts)=>`<div class="seg">${opts.map(o=>`<button type="button" class="${a[k]===o?'on':''}" data-a="an-seg" data-k="${k}" data-v="${o}">${o}</button>`).join('')}</div>`;
+  return `<div class="phead"><div>${node('s.registra')}<h1 style="margin-top:6px">Registrar paciente</h1><p>${esc(g.d.ape)}, ${esc(g.d.nom)} · DNI <span class="mono">${g.d.dni}</span></p></div>
+    <div class="steps"><span class="st done"><b>✓</b>Datos personales y cobertura</span><span class="sep"></span><span class="st on"><b>2</b>Cuestionario de salud</span></div></div>
+  <div class="card raised stack lg">
+    <div class="stack"><h3>Antecedentes médicos</h3><p class="muted small">Marcá lo que el paciente declara. Los que requieren precaución se muestran como alerta en la ficha.</p>
+      <div class="tgrid">${CONDS.map(c=>`<button type="button" class="tg ${a.conds.includes(c)?'on':''}" data-a="an-cond" data-c="${esc(c)}" aria-pressed="${a.conds.includes(c)}"><span class="box">${a.conds.includes(c)?'✓':''}</span>${c}</button>`).join('')}</div></div>
+    <hr class="hr">
+    <div class="grid2">
+      <div class="field"><label for="an-alergia">¿Es alérgico/a a algún medicamento o droga?</label><input class="input" id="an-alergia" value="${esc(a.alergia)}" placeholder="Especificá o escribí No"></div>
+      <div class="field"><label for="an-meds">¿Toma algún medicamento actualmente?</label><input class="input" id="an-meds" value="${esc(a.meds)}" placeholder="Especificá o escribí No"></div>
+      <div class="field"><label>¿Está embarazada?</label>${seg('emb',['Sí','No / No aplica'])}</div>
+      <div class="field"><label>¿Es propenso/a a las hemorragias?</label>${seg('hem',['Sí','No'])}</div>
+      <div class="field"><label>¿Fuma?</label>${seg('fuma',['Sí','No'])}</div>
+      <div class="field"><label for="an-otra">Otra enfermedad o antecedente</label><input class="input" id="an-otra" value="${esc(a.otra)}" placeholder="Opcional"></div>
+    </div>
+    <div class="row between"><button class="btn" data-a="reg-back">${I.back} Volver a datos personales</button><button class="btn pri" data-a="reg-save">Guardar ficha médica ${I.check}</button></div>
+  </div>`;
+}
+function sQueue(){
+  const all=S.cola.filter(c=>c.estado!=='finalizado');
+  const col=(title,items,empty,fn)=>`<div class="card stack"><div class="colh"><h3>${title}</h3><span class="pill">${items.length}</span></div>${items.length?`<div class="list">${items.map(fn).join('')}</div>`:`<p class="muted small">${empty}</p>`}</div>`;
+  const esperando=PROFS.flatMap(pr=>S.cola.filter(c=>c.prof===pr.id&&c.estado==='espera'));
+  return `<div class="phead"><div><h1>Cola de espera</h1><p>${cap(fmtLong(TODAY))} · se actualiza con lo que hacen los profesionales</p></div><button class="btn pri" data-a="nav" data-v="s.reception">${I.plus} Recibir paciente</button></div>
+  <div class="cols3">
+    ${col('En espera',esperando,'Nadie esperando.',c=>{const p=pac(c.pac),{pos,wait}=queuePos(c);return `<div class="lrow"><span class="pos">${pos}</span><div class="grow"><b>${esc(p.nombre)}</b><br><span class="muted small">${prof(c.prof).nombre}<br>Llegó ${c.llegada} · ~${wait} min</span></div></div>`})}
+    ${col('En atención',all.filter(c=>c.estado==='atendiendo'),'Ningún consultorio ocupado.',c=>{const p=pac(c.pac);return `<div class="lrow hl"><div class="grow">${node('s.brindar')}<br><b>${esc(p.nombre)}</b><br><span class="muted small">${prof(c.prof).nombre} · ${prof(c.prof).box}</span></div></div>`})}
+    ${col('Atendidos · pendiente de cierre',S.salida,'Cuando un profesional finaliza una atención, aparece acá para el cierre.',s=>{const p=pac(s.pac);return `<div class="lrow"><div class="grow"><b>${esc(p.nombre)}</b><br><span class="muted small">${prof(s.prof).nombre} · salió ${s.salida} h${s.turnoNuevo?' · ya tiene turno nuevo':''}</span></div><button class="btn pri sm" data-a="s-close" data-id="${s.id}">Cerrar</button></div>`})}
+  </div>`;
+}
+function sClose(){
+  const k=S.close;const s=S.salida.find(x=>x.id===k.id)||k.snap;const p=pac(s.pac);const last=S.hc.find(h=>h.pac===p.id);
+  let body='';
+  if(k.stage==='hist'){
+    body=`<div class="card raised stack">${node('s.historial')}<h2>Registrar en el historial clínico</h2>
+      ${last?`<div class="lrow"><div class="grow"><b>${esc(last.motivo)}</b> · ${esc(last.proc)}<br><span class="muted small">${esc(prof(last.prof).nombre)} · piezas <span class="mono">${esc(last.piezas)}</span> · ${fmtShort(last.fecha)}</span></div><span class="pill acc">Cargado por el profesional</span></div>`:''}
+      <div class="grid2"><div class="field"><label for="cl-os">Cobertura de la práctica</label><select class="input" id="cl-os"><option>${esc(p.os)}</option><option>Particular / Sin obra social</option></select></div>
+      <div class="field"><label for="cl-cod">Código de prestación</label><input class="input mono" id="cl-cod" value="01.01"></div></div>
+      <div class="field"><label for="cl-obs">Observaciones administrativas</label><textarea class="input" id="cl-obs" placeholder="Ej.: abonó coseguro, falta orden firmada"></textarea></div>
+      <div class="row" style="justify-content:flex-end"><button class="btn pri" data-a="cl-save">Registrar y continuar ${I.arrow}</button></div></div>`;
+  } else if(k.stage==='need'){
+    body=`<div class="card raised stack">${node('s.otro')}<h2>¿Necesita otro turno?</h2>${s.turnoNuevo?`<div class="alert info">${I.cal}<div><b>El profesional ya le dio un turno</b><p>${esc(s.turnoNuevo)}</p></div></div>`:''}
+      <div class="row"><button class="btn pri" data-a="cl-need" data-v="1">Sí, ofrecer turnos</button><button class="btn" data-a="cl-need" data-v="0">No, finalizar</button></div></div>`;
+  } else if(k.stage==='offer'){
+    body=`<div class="card raised">${offerPanel()}</div>`;
+  }
+  return `<div class="phead"><div><div class="row" style="gap:6px">${node('s.quitar')}</div><h1 style="margin-top:6px">Cierre de atención</h1><p>${esc(p.nombre)} · ${prof(s.prof).nombre}</p></div>
+    <div class="steps"><span class="st done"><b>✓</b>Quitar de la cola</span><span class="sep"></span><span class="st ${k.stage==='hist'?'on':'done'}"><b>${k.stage==='hist'?2:'✓'}</b>Historial</span><span class="sep"></span><span class="st ${k.stage!=='hist'?'on':''}"><b>3</b>Otro turno</span></div></div>
+  ${body}`;
+}
+function sPatients(){
+  const q=S.pfilter.toLowerCase();const l=S.patients.filter(p=>!q||p.nombre.toLowerCase().includes(q)||p.dni.includes(q));
+  return `<div class="phead"><div><h1>Pacientes</h1><p>${S.patients.length} pacientes registrados</p></div><button class="btn pri" data-a="s-goreg" data-from="s.patients">${I.plus} Registrar nuevo paciente</button></div>
+  <div class="card"><div class="field"><label for="pf-q">Buscar por nombre o DNI</label><input class="input" id="pf-q" data-input="pfilter" value="${esc(S.pfilter)}" placeholder="Ej.: Juan Carlos o 38647762"></div></div>
+  <div class="list">${l.map(p=>{const t=nextTurnoOf(p.id),a=alertsOf(p);return `<div class="lrow click" data-a="s-open" data-id="${p.id}"><span class="avatar">${initials(p.nombre.split(',').reverse().join(' '))}</span><div class="grow"><b>${esc(p.nombre)}</b><br><span class="muted small"><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${esc(p.os)}</span></div>${a.length?`<span class="pill bad">${I.warn} Alerta</span>`:''}${t?`<span class="pill ok">Turno ${fmtShort(t.fecha)}</span>`:'<span class="pill">Sin turno</span>'}${I.arrow}</div>`}).join('')||'<p class="muted">Sin resultados.</p>'}</div>`;
+}
+function sPatient(){
+  const p=pac(S.viewPac);
+  return `<div><button class="link" data-a="nav" data-v="s.patients">${I.back} Volver al listado de pacientes</button></div>
+  <div class="phead"><div><h1>${esc(p.nombre)}</h1><p><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${age(p.nac)} años</p></div>
+    <div class="row"><button class="btn" data-a="s-hcp" data-id="${p.id}">${I.clip} Ver historial clínico</button><button class="btn pri" data-a="s-offer-for" data-id="${p.id}">${I.cal} Dar turno</button></div></div>
+  ${S.offer&&S.offer.ctx==='sp'&&S.offer.pac===p.id?`<div class="card raised">${offerPanel()}</div>`:''}
+  ${patientInfo(p)}`;
+}
+function agenda(){
+  const isO=S.role==='odontologo';
+  const l=S.turnos.filter(t=>t.fecha===TODAY&&t.estado!=='cancelado'&&(!isO||t.prof===S.oUser)).sort((a,b)=>a.hora.localeCompare(b.hora));
+  const st=t=>{const c=S.cola.find(x=>x.turno===t.id);if(t.estado==='atendido')return '<span class="pill ok">Atendido</span>';if(c?.estado==='atendiendo')return '<span class="pill acc">En atención</span>';if(c?.estado==='espera')return '<span class="pill warn">En espera</span>';return '<span class="pill">Pendiente</span>'};
+  const up=S.turnos.filter(t=>t.fecha>TODAY&&t.estado==='confirmado'&&(!isO||t.prof===S.oUser)).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora)).slice(0,8);
+  const rows=arr=>arr.map(t=>`<tr><td class="num mono">${t.fecha===TODAY?t.hora:fmtShort(t.fecha)+' '+t.hora}</td><td><b>${esc(pac(t.pac).nombre)}</b><br><span class="muted small">DNI <span class="mono">${pac(t.pac).dni}</span></span></td><td>${prof(t.prof).nombre}</td><td>${esc(t.tipo)}</td><td class="mono">${t.id}</td><td>${t.fecha===TODAY?st(t):'<span class="pill ok">Confirmado</span>'}</td></tr>`).join('');
+  return `<div class="phead"><div><h1>${isO?'Agenda de hoy':'Turnos'}</h1><p>${cap(fmtLong(TODAY))}</p></div>${isO?'':`<button class="btn pri" data-a="nav" data-v="s.reception">${I.plus} Dar turno</button>`}</div>
+  <div class="tbl-wrap"><table><thead><tr><th>Hora</th><th>Paciente</th><th>Profesional</th><th>Atención</th><th>Código</th><th>Estado</th></tr></thead><tbody>${rows(l)||'<tr><td colspan="6" class="muted">Sin turnos hoy.</td></tr>'}</tbody></table></div>
+  <h2>Próximos días</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Paciente</th><th>Profesional</th><th>Atención</th><th>Código</th><th>Estado</th></tr></thead><tbody>${rows(up)||'<tr><td colspan="6" class="muted">Sin turnos.</td></tr>'}</tbody></table></div>`;
+}
+function hcList(){
+  const q=S.hcq.toLowerCase();
+  const pats=S.patients.map(p=>({p,last:S.hc.filter(h=>h.pac===p.id).sort((a,b)=>b.fecha.localeCompare(a.fecha))[0]})).filter(x=>x.last&&(!q||x.p.nombre.toLowerCase().includes(q)||x.p.dni.includes(q))).sort((a,b)=>b.last.fecha.localeCompare(a.last.fecha));
+  const pre=S.role==='odontologo'?'o':'s';
+  return `<div class="phead"><div><h1>Historiales clínicos</h1><p>Registros ordenados por última atención</p></div></div>
+  <div class="card"><div class="field"><label for="hc-q">Buscar DNI o nombre del paciente</label><input class="input" id="hc-q" data-input="hcq" value="${esc(S.hcq)}" placeholder="Ej.: Manuel Sánchez o 40155234"></div></div>
+  <div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Última atención</th><th>Profesional</th><th>Motivo</th><th></th></tr></thead><tbody>
+  ${pats.map(({p,last})=>`<tr><td><b>${esc(p.nombre)}</b><br><span class="muted small mono">${p.hc}</span></td><td class="num mono">${fmtShort(last.fecha)}</td><td>${prof(last.prof).nombre}</td><td>${esc(last.motivo)}</td><td><button class="btn sm" data-a="${pre}-hcp" data-id="${p.id}">Abrir</button></td></tr>`).join('')||'<tr><td colspan="5" class="muted">Sin resultados.</td></tr>'}
+  </tbody></table></div>`;
+}
+function hcPersonal(){
+  const p=pac(S.viewPac);const hist=S.hc.filter(h=>h.pac===p.id).sort((a,b)=>b.fecha.localeCompare(a.fecha));const a=alertsOf(p);
+  const back=S.role==='odontologo'?(S.att?'o.patient':'o.hcl'):'s.hcl';
+  return `<div><button class="link" data-a="nav" data-v="${back}">${I.back} Volver</button></div>
+  <div class="phead"><div><h1>${esc(p.nombre)}</h1><p><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${age(p.nac)} años · ${esc(p.os)}</p></div></div>
+  ${a.length?`<div class="alert">${I.warn}<div><b>Alerta médica</b><p>${esc(a.join(' · '))}</p></div></div>`:''}
+  <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Profesional</th><th>Motivo</th><th>Piezas</th><th>Procedimiento</th><th></th></tr></thead><tbody>
+  ${hist.map((h,i)=>`<tr><td class="num mono">${fmtShort(h.fecha)}</td><td>${prof(h.prof).nombre}</td><td>${esc(h.motivo)}</td><td class="mono">${esc(h.piezas)}</td><td>${esc(h.proc)}<br><span class="muted small">${esc(h.diag)}</span></td><td><button class="btn sm" data-a="hc-det" data-pac="${p.id}" data-i="${i}">Detalle</button></td></tr>`).join('')||'<tr><td colspan="6" class="muted">Sin registros.</td></tr>'}
+  </tbody></table></div>
+  <p class="muted small">Los registros de historia clínica no se eliminan. Para corregir uno, se agrega una nueva entrada que lo rectifica.</p>`;
+}
+
+/* ---------- actions ---------- */
+const A={
+  'go-home'(){S.role=null;S.view='home'},
+  role(d){
+    S.role=d.r;S.offer=null;
+    if(d.r==='paciente'){S.view=S.pUser?'p.home':'p.login';visit('p.acceso')}
+    if(d.r==='odontologo'){S.view=S._oIn?'o.queue':'o.login'}
+    if(d.r==='secretario'){S.view=S._sIn?'s.reception':'s.login'}
+  },
+  flow(){S.flowOpen=!S.flowOpen},
+  reset(){reset();toast('Demo reiniciada con los datos de ejemplo')},
+  nav(d){S.view=d.v;if(d.v!=='s.reception'&&S.offer&&S.offer.ctx!=='o')S.offer=null;window.scrollTo(0,0)},
+  'close-modal'(){S.modal=null},
+  fill(d){const el=$(d.t);if(el){el.value=d.val;S.plogin.dni=d.val}return false},
+  /* paciente */
+  'p-goreg'(){S.preg={dni:S.plogin.dni};S.view='p.register'},
+  'p-logout'(){S.pUser=null;S.plogin={dni:'',state:null};S.view='p.login'},
+  'p-newbook'(){S.book={step:1,prof:null,tipo:'',month:new Date(parse(TODAY).getFullYear(),parse(TODAY).getMonth(),1),fecha:null,hora:null};S.view='p.book';visit('p.turnos')},
+  'bk-prof'(d){S.book.prof=d.id;S.book.fecha=null;S.book.hora=null},
+  'bk-step'(d){S.book.step=+d.s;window.scrollTo(0,0)},
+  'bk-month'(d){const m=S.book.month;S.book.month=new Date(m.getFullYear(),m.getMonth()+ +d.dir,1)},
+  'bk-day'(d){S.book.fecha=d.d;S.book.hora=null},
+  'bk-hora'(d){S.book.hora=d.h},
+  'bk-confirm'(){
+    const b=S.book,p=pac(S.pUser);const tel=val('bk-tel');if(tel)p.tel=tel;
+    const t={id:newTurnoId(),pac:p.id,prof:b.prof,fecha:b.fecha,hora:b.hora,tipo:b.tipo||'Consulta y revisión',estado:'confirmado'};
+    S.turnos.push(t);sendWA(p,t);b.done=t.id;S.view='p.done';visit('p.solicitar','p.constancia');window.scrollTo(0,0);
+  },
+  /* odontólogo */
+  'o-enter'(d){S.oUser=d.id;S._oIn=true;S.view='o.queue';visit('o.acceso','o.hay')},
+  logout(){if(S.role==='odontologo'){S._oIn=false;S.view='o.login'}else{S._sIn=false;S.view='s.login'}},
+  'o-call'(d){const c=S.cola.find(x=>x.id===d.id);c.estado='atendiendo';c.llamado=nowHM();S.att={cola:c.id,teeth:[]};S.offer=null;S.view='o.patient';visit('o.marcar','o.llamar','o.info');toast(`Llamando a ${pac(c.pac).nombre} a ${prof(c.prof).box}`);window.scrollTo(0,0)},
+  'o-open'(d){if(!S.att||S.att.cola!==d.id)S.att={cola:d.id,teeth:[]};S.view=S.att.saved?'o.next':'o.patient';visit('o.info')},
+  'o-recall'(){toast('Se volvió a anunciar al paciente en la sala')},
+  'o-start'(){S.view='o.attend';visit('o.atender');window.scrollTo(0,0)},
+  'o-hcp'(d){S.viewPac=d.id;S.view='o.hcp'},
+  tooth(d){const n=+d.n,a=S.att.teeth;const i=a.indexOf(n);i<0?a.push(n):a.splice(i,1);a.sort((x,y)=>x-y);saveAtt()},
+  'o-need'(d){const c=S.cola.find(x=>x.id===S.att.cola);visit('o.necesita');S.att.need=d.v==='1';if(S.att.need)startOffer(c.pac,'o',c.prof)},
+  'o-quit'(){
+    const c=S.cola.find(x=>x.id===S.att.cola);c.estado='finalizado';const t=turno(c.turno);if(t)t.estado='atendido';
+    const nt=S.offer&&S.offer.result?turno(S.offer.result):null;
+    S.salida.push({id:'s'+Date.now(),pac:c.pac,prof:c.prof,salida:nowHM(),turnoNuevo:nt?`${fmtLong(nt.fecha)} · ${nt.hora} h (${nt.id})`:null});
+    S.cola=S.cola.filter(x=>x.id!==c.id);visit('o.quitar','s.brindar');
+    S.att=null;S.offer=null;S.view='o.queue';toast('Paciente quitado de la cola. Recepción hace el cierre.');
+  },
+  'o-hcp-btn'(){},
+  /* offer */
+  'offer-accept'(d){
+    const o=S.offer,p=pac(o.pac);const t={id:newTurnoId(),pac:p.id,prof:o.prof,fecha:d.f,hora:d.h,tipo:o.tipo,estado:'confirmado'};
+    S.turnos.push(t);sendWA(p,t);o.result=t.id;const pre=o.ctx==='o'?'o':'s';visit(pre+'.acepta');if(pre==='s')visit('s.constancia');
+    toast('Turno asignado. Constancia enviada por WhatsApp.');
+  },
+  'offer-reject'(){S.offer.asking=true;visit((S.offer.ctx==='o'?'o':'s')+'.acepta')},
+  'offer-more'(){S.offer.asking=false;S.offer.page++;visit((S.offer.ctx==='o'?'o':'s')+'.mas')},
+  'offer-stop'(){S.offer.asking=false;S.offer.ended=true;visit((S.offer.ctx==='o'?'o':'s')+'.mas')},
+  'offer-finish'(){
+    const o=S.offer;S.offer=null;
+    if(o.ctx==='s'){S.rec={q:'',pac:null,res:null,val:null};S.view='s.reception';toast('Recepción lista para el próximo paciente')}
+    else if(o.ctx==='sc'){finishClose()}
+    else if(o.ctx==='sp'){S.view='s.patient'}
+  },
+  /* secretaría */
+  's-try'(d){S.rec={q:d.val,res:null,pac:null,val:null};S.offer=null;S.view='s.reception';doSearch()},
+  's-goreg'(d){const q=S.rec.q&&/^\d+$/.test(S.rec.q)?S.rec.q:'';S.reg={step:1,d:{dni:q},a:{conds:[],alergia:'',meds:'',emb:'',hem:'',fuma:'',otra:''},from:d.from||'s.reception'};S.view='s.register';window.scrollTo(0,0)},
+  's-open'(d){S.viewPac=d.id;S.offer=null;S.view='s.patient'},
+  's-hcp'(d){S.viewPac=d.id;S.view='s.hcp'},
+  's-offer'(){startOffer(S.rec.pac,'s','L')},
+  's-offer-for'(d){startOffer(d.id,'sp','L')},
+  's-validate'(){
+    const p=pac(S.rec.pac),t=nextTurnoOf(p.id);visit('s.validar','s.valido');
+    if(t.fecha!==TODAY) S.rec.val={ok:false,msg:`El turno ${t.id} es para el ${fmtLong(t.fecha).toLowerCase()} a las ${t.hora} h, no para hoy.`,script:`Tu turno es el ${fmtLong(t.fecha).toLowerCase()} a las ${t.hora} con ${prof(t.prof).nombre}. Hoy no podemos atenderte con ese turno; te esperamos ese día.`};
+    else S.rec.val={ok:true,msg:`Turno ${t.id} de hoy a las ${t.hora} h con ${prof(t.prof).nombre}. Estado confirmado.`};
+  },
+  's-inform'(){S.rec.informed=true;visit('s.informar')},
+  's-clear'(){S.rec={q:'',pac:null,res:null,val:null};S.offer=null},
+  's-addq'(){
+    const p=pac(S.rec.pac),t=nextTurnoOf(p.id);const wa=$('rc-wa')?.checked;
+    const c={id:'c'+Date.now(),pac:p.id,turno:t.id,prof:t.prof,llegada:nowHM(),estado:'espera'};S.cola.push(c);visit('s.agregar');
+    if(wa){const m=sendWA(p,t,'cola');S.modal={type:'wa',msg:m}}
+    toast(`${p.nombre} está en la cola · posición ${queuePos(c).pos}`);S.rec={q:'',pac:null,res:null,val:null};
+  },
+  'an-cond'(d){const a=S.reg.a;readAnam();const i=a.conds.indexOf(d.c);i<0?a.conds.push(d.c):a.conds.splice(i,1)},
+  'an-seg'(d){readAnam();S.reg.a[d.k]=d.v},
+  'reg-back'(){readAnam();S.reg.step=1},
+  'reg-save'(){
+    readAnam();const g=S.reg,a=g.a;
+    const p=createPatient(g.d,{conds:[...a.conds,...(a.hem==='Sí'&&!a.conds.includes('Problemas de coagulación')?['Propenso a hemorragias']:[])],alergia:a.alergia||'No',meds:a.meds||'No',fuma:a.fuma||'No informado'});
+    visit('s.registrado','s.registra');toast(`Ficha creada: ${p.hc}`);
+    if(g.from==='s.patients'){S.viewPac=p.id;S.view='s.patient'}
+    else{S.rec={q:p.dni,pac:p.id,res:'found',val:null};S.view='s.reception';visit('s.tiene');startOffer(p.id,'s','L')}
+    S.reg=null;window.scrollTo(0,0);
+  },
+  's-close'(d){const s=S.salida.find(x=>x.id===d.id);S.close={id:d.id,stage:'hist',snap:s};S.view='s.close';visit('s.quitar')},
+  'cl-save'(){const k=S.close;const s=k.snap;S.salida=S.salida.filter(x=>x.id!==k.id);k.stage='need';visit('s.historial');toast('Registrado en el historial clínico')},
+  'cl-need'(d){visit('s.otro');if(d.v==='1'){S.close.stage='offer';startOffer(S.close.snap.pac,'sc',S.close.snap.prof)}else finishClose()},
+  'hc-det'(d){const hist=S.hc.filter(h=>h.pac===d.pac).sort((a,b)=>b.fecha.localeCompare(a.fecha));S.modal={type:'hcdet',h:hist[+d.i]}},
+};
+function finishClose(){S.close=null;S.offer=null;S.view='s.queue';toast('Atención cerrada')}
+function readAnam(){const a=S.reg?.a;if(!a||!$('an-alergia'))return;a.alergia=val('an-alergia');a.meds=val('an-meds');a.otra=val('an-otra')}
+function saveAtt(){if(!$('at-proc'))return;Object.assign(S.att,{motivo:val('at-motivo'),proc:val('at-proc'),diag:val('at-diag'),ind:val('at-ind'),notas:val('at-notas')})}
+function doSearch(){
+  const q=S.rec.q.trim();if(!q){return}
+  visit('s.llegada','s.registrado');
+  const digits=q.replace(/\D/g,'');
+  const p=S.patients.find(x=>(digits.length>=6&&x.dni===digits)||(!digits&&x.nombre.toLowerCase().includes(q.toLowerCase())));
+  if(!p){S.rec.res='nf';return}
+  S.rec.res='found';S.rec.pac=p.id;visit('s.tiene');
+}
+
+/* forms */
+const F={
+  'p-login'(){
+    const d=val('pl-dni').replace(/\D/g,'');S.plogin.dni=d;visit('p.validar','p.existe');
+    if(!/^\d{7,8}$/.test(d)){S.plogin.state='bad';return}
+    const p=S.patients.find(x=>x.dni===d);
+    if(!p){S.plogin.state='nf';return}
+    S.pUser=p.id;S.plogin.state=null;S.view='p.home';visit('p.tiene');if(colaOf(p.id))visit('p.cola');
+  },
+  'p-reg'(){
+    const r=readReg('pr');const e=regErrors(r);if(e.length){S.preg={...r,err:e};return}
+    const p=createPatient(r);S.pUser=p.id;S.preg=null;visit('p.registrar');toast(`Te registramos con la historia clínica ${p.hc}`);A['p-newbook']();
+  },
+  's-login'(){S._sIn=true;S.view='s.reception';visit('s.acceso')},
+  's-search'(){S.rec={q:val('rc-q'),res:null,pac:null,val:null};S.offer=null;doSearch()},
+  's-reg1'(){const r=readReg('sr');const e=regErrors(r);if(e.length){S.reg.d=r;S.reg.err=e;return}S.reg.d=r;S.reg.err=null;S.reg.step=2;window.scrollTo(0,0)},
+  'o-hc'(){
+    saveAtt();const a=S.att;if(!a.proc){a.err=true;return}a.err=false;
+    const c=S.cola.find(x=>x.id===a.cola);
+    S.hc.push({pac:c.pac,fecha:TODAY,prof:c.prof,motivo:a.motivo,piezas:a.teeth.length?a.teeth.join(', '):'—',proc:a.proc,diag:a.diag||'—',notas:[a.notas,a.ind&&('Indicaciones: '+a.ind)].filter(Boolean).join(' ')||'—'});
+    a.saved=true;S.view='o.next';visit('o.hc');toast('Historia clínica actualizada');window.scrollTo(0,0);
+  },
+};
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-a]');if(!el)return;
+  const fn=A[el.dataset.a];if(!fn)return;e.preventDefault();
+  if(S.view==='o.attend'&&el.dataset.a!=='tooth')saveAtt();
+  const r=fn(el.dataset,el);if(r!==false)render();
+});
+document.addEventListener('submit',e=>{const f=e.target.closest('[data-form]');if(!f)return;e.preventDefault();F[f.dataset.form]?.();render()});
+document.addEventListener('change',e=>{
+  const k=e.target.dataset.change;if(!k)return;
+  if(k==='bk-tipo'){S.book.tipo=e.target.value;if(S.book.prof&&S.book.tipo&&!prof(S.book.prof).tipos.includes(S.book.tipo))S.book.prof=null}
+  if(k==='offer-prof'){S.offer.prof=e.target.value;S.offer.page=0;S.offer.tipo=prof(e.target.value).tipos[0]}
+  if(k==='offer-tipo'){S.offer.tipo=e.target.value}
+  render();
+});
+document.addEventListener('input',e=>{
+  const k=e.target.dataset.input;if(!k)return;S[k]=e.target.value;
+  const pos=e.target.selectionStart;const id=e.target.id;render();const el=$(id);if(el){el.focus();try{el.setSelectionRange(pos,pos)}catch(_){}}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(S.modal||S.flowOpen)){S.modal=null;S.flowOpen=false;render()}});
+render();
+</script>
+
+</body></html>
