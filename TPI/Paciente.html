@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Consultorio Odontológico — Portal del paciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="comun.css">
+  <style>
+.pshell{max-width:1080px;margin:0 auto;padding-block:24px 60px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+.ptop{display:flex;align-items:center;gap:12px 16px;margin-bottom:28px;flex-wrap:wrap;background:var(--surface);border-radius:var(--r-lg);padding:10px 16px;box-shadow:var(--shadow-sm);border:1px solid var(--line)}
+.ptop nav{display:flex;gap:4px;flex-wrap:wrap}
+.ptop nav button{min-height:var(--tap);border:0;background:none;padding:8px 14px;border-radius:8px;cursor:pointer;color:var(--muted);font-weight:600}
+.ptop nav button:hover{background:var(--surface-2);color:var(--fg)}
+.ptop nav button:active{background:var(--accent-soft)}
+.ptop nav button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.ptop .end{margin-inline-start:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+/* selector de idioma: desplegable bajo el ícono del mundo, siempre al final del encabezado */
+.langdd{position:relative}
+.langdd>.btn{gap:6px;padding-inline:12px}
+.langdd>.btn .ico:last-child{width:14px;height:14px;transition:transform .15s}
+.langdd>.btn[aria-expanded="true"] .ico:last-child{transform:rotate(180deg)}
+.langdd ul{position:absolute;top:calc(100% + 6px);inset-inline-end:0;z-index:40;list-style:none;margin:0;padding:6px;min-width:180px;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);box-shadow:var(--shadow)}
+.langdd li button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:var(--tap);border:0;background:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:600;text-align:start}
+.langdd li button:hover{background:var(--surface-2)}
+.langdd li button:active{background:var(--accent-soft)}
+.langdd li button[aria-current="true"]{color:var(--accent);background:var(--accent-soft)}
+.langdd [lang="ar"]{font-family:"IBM Plex Sans Arabic",system-ui,sans-serif}
+@media (max-width:640px){.ptop nav{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap}.ptop nav button{white-space:nowrap}}
+.sum{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:14px 18px;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.sum>div{display:flex;gap:10px;align-items:center;min-width:0}
+.sum small{display:block;color:var(--muted);font-size:.85rem}
+.qhero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+.qnum{font-family:var(--f-display);font-size:4.5rem;line-height:1;color:var(--accent);font-weight:650}
+.track{display:flex;list-style:none;margin:14px 0 0;padding:0}
+.track li{flex:1;text-align:center;font-size:.85rem;color:var(--muted);position:relative;padding-top:20px}
+.track li::before{content:"";position:absolute;top:6px;left:0;right:0;height:3px;background:var(--line-strong)}
+.track li::after{content:"";position:absolute;top:0;left:50%;margin-left:-7px;width:15px;height:15px;border-radius:50%;background:var(--surface);border:2px solid var(--line-strong)}
+.track li.on{color:var(--accent);font-weight:700}
+.track li.on::before,.track li.on::after{background:var(--accent);border-color:var(--accent)}
+.qhero-wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+@media (max-width:820px){.qhero-wrap{grid-template-columns:1fr}.qhero{grid-template-columns:1fr}}
+.narrow{max-width:560px;margin:8px auto}
+.mid{max-width:820px;margin:0 auto}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="comun.js"></script>
+<script>
+/* =====================================================================
+   Textos de la interfaz en español y árabe (RTL).
+   Todo texto visible sale de este diccionario: así se puede traducir sin tocar el código.
+   La traducción al árabe debe validarse con hablantes nativos antes de un uso real (clase 15).
+   ===================================================================== */
+const T={
+es:{title:'Consultorio Odontológico — Portal del paciente',sub:'Portal del paciente',lang:'Idioma','nav.label':'Portal del paciente','nav.home':'Mi turno','nav.book':'Pedir turno','nav.file':'Mi ficha',logout:'Salir',back:'Volver',h:' h',
+'login.h1':'Ingresá con tu DNI','login.p':'Ingresá tu DNI y tu contraseña para ver tus turnos y tu ficha.','f.pass':'Contraseña','f.dni':'Número de documento (DNI)','f.dniHint':'Solo números, sin puntos.','login.btn':'Ingresar','login.errT':'No pudimos validar tus datos','login.errP':'Revisá el DNI y la contraseña.','login.new':'¿Todavía no sos paciente? El alta la hace recepción: acercate al consultorio o escribinos por WhatsApp y te enviamos tu contraseña provisoria.',demo:'Datos de prueba (solo demo)','demo.fill':'Completar con',
+'st.label':'Pasos',cov:'Cobertura médica',
+
+'an.h1':'Tu ficha de salud','an.p':'Lo que nos cuentes acá lo ve solo el profesional que te atiende, para cuidarte durante el tratamiento.','an.miss':'Datos que faltan','f.dom':'Domicilio','f.loc':'Localidad','f.ocup':'Ocupación','an.conds':'Antecedentes médicos','an.condsP':'Marcá si tenés o tuviste alguna de estas condiciones.','an.alergia':'¿Sos alérgico/a a algún medicamento?','an.hintNo':'Si no, escribí "No".','an.meds':'¿Tomás algún medicamento actualmente?','an.emb':'¿Hay un embarazo en curso?','an.hem':'¿Tenés tendencia a sangrar mucho (hemorragias)?','an.fuma':'¿Fumás?','an.otra':'Otra enfermedad o antecedente','an.btn':'Guardar ficha de salud','an.ok':'Tu ficha de salud quedó guardada.','an.pick':'Elegí una opción.',yes:'Sí',no:'No',na:'No aplica',
+'home.hi':'Hola, {n}','home.pendT':'Te falta completar tu ficha de salud','home.pendP':'Hacelo antes de tu primera consulta: lleva unos 3 minutos y la ve solo tu odontólogo/a.','home.pendBtn':'Completar mi ficha de salud',
+'q.state':'Estado de atención','q.calling':'Te están llamando','q.waiting':'En sala de espera','q.now':'Ahora','q.goTo':'Pasá a {box}','q.next':'Sos el próximo','q.before1':'Hay 1 persona antes que vos','q.beforeN':'Hay {n} personas antes que vos','q.waitingYou':'{d} te está esperando.','q.delay':'Demora estimada: ~{w} min · Llegaste a las {t} h','tr.label':'Etapas de la atención','tr.rec':'Recepción','tr.wait':'En espera','tr.called':'Llamado','tr.done':'Atendido','q.note':'Cada turno dura unos 30 minutos. La demora se recalcula cuando el profesional llama al siguiente paciente.',
+'t.your':'Tu turno','t.confirmed':'Confirmado','t.next':'Tu próximo turno','t.todayT':'Tu turno es hoy','t.todayP':'Cuando llegues, anunciate en recepción. Desde esta pantalla vas a ver tu posición en la sala de espera.','t.laterT':'Te esperamos el {d}','t.laterP':'El día del turno vas a poder ver tu posición en la sala de espera desde esta pantalla.','t.code':'Código','t.reprog':'Reprogramar','t.cancel':'Cancelar turno','t.policy':'Si no podés venir, cancelalo o reprogramalo con al menos 24 h de anticipación: así el horario queda libre para otra persona.','t.none':'No tenés turnos pendientes','t.noneP':'Elegí profesional, día y horario. La confirmación te llega por WhatsApp.','t.see':'Ver turnos disponibles',
+last:'Últimas atenciones','last.none':'Todavía no tenés atenciones registradas.','last.ind':'Indicaciones','last.msg':'Último mensaje',
+'cx.h':'¿Cancelar tu turno?','cx.p':'El horario queda libre para otra persona. Te enviamos la confirmación por WhatsApp.','cx.keep':'No, mantener mi turno','cx.yes':'Sí, cancelar turno','cx.ok':'Cancelaste tu turno del {d}.',
+'bk.h1':'Turnos disponibles','bk.p':'Elegí el profesional, el día y el horario que mejor te queden.','bk.reprogT':'Estás cambiando tu turno del {d}','bk.reprogP':'Tu turno actual se mantiene hasta que confirmes el nuevo.','st.prof':'Profesional','st.date':'Fecha y horario','st.confirm':'Confirmar','bk.tipo':'Tipo de atención','bk.all':'Todas','bk.sede':'Sede','bk.attends':'Atiende {d}','bk.choose':'Elegir','bk.chosen':'Seleccionado','bk.chooseAria':'Elegir a {n}','bk.cancel':'Cancelar','bk.cont':'Continuar','bk.changeProf':'Cambiar profesional','bk.dur':'30 minutos · Presencial','bk.sedeC':'Sede Centro','bk.month':'Elegí un día','bk.hours':'Horario','bk.firstDay':'Primero elegí un día en el calendario.','bk.am':'Por la mañana','bk.pm':'Por la tarde','bk.tz':'Hora de Córdoba (GMT-3) · turnos de 30 min','bk.hoursOf':'Horarios del {d}','bk.free':'{n} turnos libres','bk.next3':'Continuar con mis datos','bk.enable':'El botón se habilita cuando elegís un horario.','bk.needProf':'El botón se habilita cuando elegís un profesional.','bk.patient':'Datos del paciente','bk.patientP':'Revisá que estén bien. A este número te enviamos la constancia.','k.pac':'Paciente','k.dni':'DNI','k.hc':'Historia clínica','k.cov':'Cobertura','bk.wa':'WhatsApp para la constancia','bk.nota':'Motivo de consulta (opcional)','bk.notaPh':'Ej.: me duele una muela al masticar','bk.sum':'Resumen','bk.confirm':'Confirmar turno','bk.confirmRe':'Confirmar el cambio de turno','bk.changeHour':'Cambiar horario',
+'done.h1':'Listo, tu turno está confirmado','done.h1re':'Listo, cambiaste tu turno','done.p':'Te enviamos la constancia por WhatsApp al {tel}.','done.card':'Constancia de turno','k.code':'Código','k.prof':'Profesional','k.att':'Atención','k.sede':'Sede','done.go':'Ir a mi turno',
+'file.h1':'Mi ficha','file.p':'Tus datos personales, tu cobertura y tu ficha de salud.','file.personal':'Datos personales','k.nac':'Fecha de nacimiento','k.tel':'Teléfono','k.email':'Correo','k.dom':'Domicilio','k.ocup':'Ocupación','k.os':'Obra social','k.afil':'N° de afiliado','file.health':'Ficha de salud','file.done':'Completa','file.pending':'Pendiente','file.edit':'Editar mi ficha de salud','file.private':'Solo la ve el profesional que te atiende.','k.conds':'Condiciones','k.alergia':'Alergias','k.meds':'Medicación','k.fuma':'Fuma',none:'Ninguna',
+'wa.title':'WhatsApp · Consultorio Odontológico',
+'wa.confirm':'Consultorio Odontológico\nHola {n}, tu turno quedó CONFIRMADO.\n\n{d} · {h} h\n{p} · {t}\n{sede}\nCódigo: {c}\n\nPodés cancelarlo o reprogramarlo desde el portal del paciente.',
+'wa.reprog':'Consultorio Odontológico\nHola {n}, tu turno quedó REPROGRAMADO.\n\nNuevo turno: {d} · {h} h\n{p} · {t}\n{sede}\nCódigo: {c}',
+'wa.cancel':'Consultorio Odontológico\nHola {n}, cancelamos tu turno del {d} a las {h} h (código {c}).\nCuando quieras, podés pedir uno nuevo desde el portal del paciente.',
+},
+ar:{title:'عيادة طب الأسنان — بوابة المريض',brand:'عيادة طب الأسنان',sub:'بوابة المريض',lang:'اللغة','nav.label':'بوابة المريض','nav.home':'موعدي','nav.book':'حجز موعد','nav.file':'ملفي',logout:'تسجيل الخروج',back:'رجوع',h:'',close:'إغلاق',crumbs:'مسار التنقل',
+'login.h1':'سجّل الدخول برقم هويتك','login.p':'أدخل رقم هويتك وكلمة المرور لعرض مواعيدك وملفك.','f.pass':'كلمة المرور','pass.show':'إظهار','pass.word':'كلمة المرور','f.dni':'رقم الهوية (DNI)','f.dniHint':'أرقام فقط، بدون نقاط.','login.btn':'دخول','login.errT':'تعذّر التحقق من بياناتك','login.errP':'تحقق من رقم الهوية وكلمة المرور.','login.new':'لست مريضًا مسجّلًا بعد؟ يتم التسجيل في الاستقبال: تفضّل بزيارة العيادة أو راسلنا عبر واتساب وسنرسل لك كلمة مرور مؤقتة.',demo:'بيانات تجريبية (للعرض فقط)','demo.fill':'ملء البيانات بـ',
+'st.label':'الخطوات',cov:'التغطية الصحية',
+
+'an.h1':'ملفك الصحي','an.p':'ما تكتبه هنا لا يطّلع عليه إلا الطبيب المعالج، لرعايتك أثناء العلاج.','an.miss':'بيانات ناقصة','f.dom':'العنوان','f.loc':'المدينة','f.ocup':'المهنة','an.conds':'السوابق المرضية','an.condsP':'حدّد إن كنت تعاني أو عانيت سابقًا من أيٍّ من هذه الحالات.','an.alergia':'هل لديك حساسية من أي دواء؟','an.hintNo':'إن لم يكن، فاكتب "لا".','an.meds':'هل تتناول أي دواء حاليًا؟','an.emb':'هل يوجد حمل حاليًا؟','an.hem':'هل لديك ميل إلى النزيف الشديد؟','an.fuma':'هل تدخّن؟','an.otra':'مرض أو سابقة أخرى','an.btn':'حفظ الملف الصحي','an.ok':'تم حفظ ملفك الصحي.','an.pick':'اختر خيارًا.',yes:'نعم',no:'لا',na:'لا ينطبق',
+'home.hi':'مرحبًا، {n}','home.pendT':'لم تُكمل ملفك الصحي بعد','home.pendP':'أكمله قبل زيارتك الأولى: يستغرق نحو 3 دقائق ولا يطّلع عليه إلا طبيب الأسنان.','home.pendBtn':'إكمال ملفي الصحي',
+'q.state':'حالة الدور','q.calling':'حان دورك','q.waiting':'في قاعة الانتظار','q.now':'الآن','q.goTo':'تفضّل إلى {box}','q.next':'أنت التالي','q.before1':'أمامك شخص واحد','q.beforeN':'أمامك {n} أشخاص','q.waitingYou':'{d} بانتظارك.','q.delay':'مدة الانتظار المتوقعة: ~{w} دقيقة · وصلت الساعة {t}','tr.label':'مراحل المعاينة','tr.rec':'الاستقبال','tr.wait':'الانتظار','tr.called':'المناداة','tr.done':'تمت المعاينة','q.note':'تستغرق كل معاينة نحو 30 دقيقة. يُعاد حساب مدة الانتظار عندما ينادي الطبيب المريض التالي.',
+'t.your':'موعدك','t.confirmed':'مؤكَّد','t.next':'موعدك القادم','t.todayT':'موعدك اليوم','t.todayP':'عند وصولك، أبلغ موظفي الاستقبال. ستتمكن من متابعة دورك في قاعة الانتظار من هذه الشاشة.','t.laterT':'ننتظرك يوم {d}','t.laterP':'في يوم الموعد، ستتمكن من متابعة دورك في قاعة الانتظار من هذه الشاشة.','t.code':'الرمز','t.reprog':'تغيير الموعد','t.cancel':'إلغاء الموعد','t.policy':'إذا لم تتمكن من الحضور، ألغِ الموعد أو غيّره قبل 24 ساعة على الأقل، ليصبح الوقت متاحًا لشخص آخر.','t.none':'ليس لديك مواعيد قادمة','t.noneP':'اختر الطبيب واليوم والوقت. سيصلك التأكيد عبر واتساب.','t.see':'عرض المواعيد المتاحة',
+last:'آخر الزيارات','last.none':'لا توجد زيارات مسجّلة بعد.','last.ind':'التعليمات','last.msg':'آخر رسالة',
+'cx.h':'هل تريد إلغاء موعدك؟','cx.p':'سيصبح الوقت متاحًا لشخص آخر. سنرسل لك التأكيد عبر واتساب.','cx.keep':'لا، أبقِ موعدي','cx.yes':'نعم، ألغِ الموعد','cx.ok':'تم إلغاء موعدك يوم {d}.',
+'bk.h1':'المواعيد المتاحة','bk.p':'اختر الطبيب واليوم والوقت الأنسب لك.','bk.reprogT':'أنت تغيّر موعدك المحدد يوم {d}','bk.reprogP':'يبقى موعدك الحالي قائمًا حتى تؤكد الموعد الجديد.','st.prof':'الطبيب','st.date':'التاريخ والوقت','st.confirm':'التأكيد','bk.tipo':'نوع المعاينة','bk.all':'الكل','bk.sede':'المقر','bk.attends':'أيام العمل: {d}','bk.choose':'اختيار','bk.chosen':'تم الاختيار','bk.chooseAria':'اختيار {n}','bk.cancel':'إلغاء','bk.cont':'متابعة','bk.changeProf':'تغيير الطبيب','bk.dur':'30 دقيقة · حضوري','bk.sedeC':'المقر المركزي','bk.month':'اختر يومًا','bk.hours':'الوقت','bk.firstDay':'اختر يومًا من التقويم أولًا.','bk.am':'صباحًا','bk.pm':'مساءً','bk.tz':'بتوقيت قرطبة (GMT-3) · مدة الموعد 30 دقيقة','bk.hoursOf':'أوقات يوم {d}','bk.free':'المواعيد المتاحة: {n}','bk.next3':'متابعة إلى بياناتي','bk.enable':'يُفعَّل الزر عند اختيار وقت.','bk.needProf':'يُفعَّل الزر عند اختيار طبيب.','bk.patient':'بيانات المريض','bk.patientP':'تأكد من صحتها. سنرسل التأكيد إلى هذا الرقم.','k.pac':'المريض','k.dni':'رقم الهوية','k.hc':'السجل الطبي','k.cov':'التغطية','bk.wa':'رقم واتساب لإرسال التأكيد','bk.nota':'سبب الزيارة (اختياري)','bk.notaPh':'مثال: ألم في ضرس عند المضغ','bk.sum':'الملخص','bk.confirm':'تأكيد الموعد','bk.confirmRe':'تأكيد تغيير الموعد','bk.changeHour':'تغيير الوقت',
+'done.h1':'تم، موعدك مؤكَّد','done.h1re':'تم تغيير موعدك','done.p':'أرسلنا التأكيد عبر واتساب إلى الرقم {tel}.','done.card':'تأكيد الموعد','k.code':'الرمز','k.prof':'الطبيب','k.att':'المعاينة','k.sede':'المقر','done.go':'الذهاب إلى موعدي',
+'file.h1':'ملفي','file.p':'بياناتك الشخصية وتغطيتك وملفك الصحي.','file.personal':'البيانات الشخصية','k.nac':'تاريخ الميلاد','k.tel':'الهاتف','k.email':'البريد الإلكتروني','k.dom':'العنوان','k.ocup':'المهنة','k.os':'التأمين الصحي','k.afil':'رقم العضوية','file.health':'الملف الصحي','file.done':'مكتمل','file.pending':'غير مكتمل','file.edit':'تعديل ملفي الصحي','file.private':'لا يطّلع عليه إلا الطبيب المعالج.','k.conds':'الحالات','k.alergia':'الحساسية','k.meds':'الأدوية','k.fuma':'التدخين',none:'لا يوجد',
+'wa.title':'واتساب · عيادة طب الأسنان',
+'wa.confirm':'عيادة طب الأسنان\nمرحبًا {n}، تم تأكيد موعدك.\n\n{d} · {h}\n{p} · {t}\n{sede}\nالرمز: {c}\n\nيمكنك إلغاء الموعد أو تغييره من بوابة المريض.',
+'wa.reprog':'عيادة طب الأسنان\nمرحبًا {n}، تم تغيير موعدك.\n\nالموعد الجديد: {d} · {h}\n{p} · {t}\n{sede}\nالرمز: {c}',
+'wa.cancel':'عيادة طب الأسنان\nمرحبًا {n}، تم إلغاء موعدك يوم {d} الساعة {h} (الرمز {c}).\nيمكنك حجز موعد جديد من بوابة المريض متى شئت.',
+'v.req':'يرجى ملء هذا الحقل.','v.dni':'أدخل 7 أو 8 أرقام بدون نقاط.','v.tel':'أدخل الرقم كاملًا مع رمز المنطقة (10 أرقام على الأقل).','v.email':'تحقق من البريد الإلكتروني: ينقصه الرمز @ أو النطاق.','v.reqsr':'إلزامي','v.sumT':'راجع البيانات المحددة','v.sum1':'هناك حقل واحد يحتاج إلى تصحيح.','v.sumN':'عدد الحقول التي تحتاج إلى تصحيح: {n}.',
+'cal.heads':['إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت','أحد'],'cal.one':'موعد واحد','cal.many':'{n} مواعيد','cal.ok':'متاح','cal.few':'مواعيد قليلة','cal.none':'لا مواعيد','cal.off':'لا يعمل الطبيب','cal.past':'تاريخ مضى','cal.today':'اليوم','cal.prev':'الشهر السابق','cal.next':'الشهر التالي','cal.lg.ok':'متاح (الرقم = المواعيد المتاحة)','cal.lg.few':'مواعيد قليلة (4 أو أقل)','cal.lg.off':'لا مواعيد / لا يعمل الطبيب',
+},
+};
+/* datos que se muestran traducidos (los valores se guardan siempre en español) */
+const DATA_AR={'Consulta y revisión':'استشارة وفحص','Limpieza':'تنظيف الأسنان','Urgencia':'حالة طارئة','Control de ortodoncia':'متابعة تقويم الأسنان','Tratamiento de conducto':'علاج قناة الجذر',
+  'Odontología general':'طب الأسنان العام','Ortodoncia':'تقويم الأسنان','Endodoncia':'علاج جذور الأسنان','Particular / Sin obra social':'خاص / بدون تأمين صحي',
+  'Problemas cardíacos':'أمراض القلب','Cefaleas frecuentes':'صداع متكرر','Artritis o artrosis':'التهاب أو خشونة المفاصل','Alteraciones nerviosas':'اضطرابات عصبية','Hepatitis':'التهاب الكبد','Presión sanguínea alta':'ارتفاع ضغط الدم','Presión sanguínea baja':'انخفاض ضغط الدم','Problemas de coagulación':'اضطرابات تخثر الدم','Problemas renales':'أمراض الكلى','Fiebre reumática':'الحمى الروماتيزمية','Problemas gástricos':'مشكلات المعدة','Alergia al látex':'حساسية اللاتكس','Diabetes':'السكري','HIV / Sida':'فيروس نقص المناعة / الإيدز','Epilepsia':'الصرع',
+  'Sí':'نعم','No':'لا','No aplica':'لا ينطبق','No informado':'—'};
+const t=(k,vars)=>{let s=tr(k,T.es[k]??k);if(vars)for(const v in vars)s=s.replaceAll('{'+v+'}',vars[v]);return s};
+const dx=v=>LANG==='ar'?(DATA_AR[v]??String(v).replace(/^Consultorio (\d)$/,'العيادة $1')):v;   // dato traducido
+const H=h=>`<span class="ltr">${h}</span>${t('h')}`;                      // hora siempre LTR
+const dayShort=i=>LANG==='es'?DOW[i].slice(0,3):new Intl.DateTimeFormat(LOCALE(),{weekday:'short'}).format(new Date(2026,1,1+i)); // 1/2/2026 fue domingo
+const sedeTxt=()=>LANG==='ar'?`${t('bk.sedeC')} · Av. Colón 1234, Córdoba`:SEDE;
+
+/* ---------- estado ---------- */
+let S;
+function reset(){S={...seed(),view:'p.login',toast:null,modal:null,pUser:null,login:{fail:false},book:null,anam:null,err:{},focusId:null}}
+reset();
+const app=$('app');
+const me=()=>pac(S.pUser);
+
+function setLang(l){
+  LANG=l;document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';document.title=t('title');
+}
+
+function renderView(){app.innerHTML=`${vPatient()}${vModal()}${toastHTML()}`}
+
+function vModal(){
+  const m=S.modal;if(!m)return '';
+  if(m.type==='cancel'){const tu=turno(m.id),pr=prof(tu.prof);
+    return modalWrap(`<h2 id="dlg-t">${t('cx.h')}</h2>
+      <div class="alert info">${I.cal}<div><b>${fmtLong(tu.fecha)} · ${H(tu.hora)}</b><p>${esc(pr.nombre)} · ${esc(dx(tu.tipo))}</p></div></div>
+      <p>${t('cx.p')}</p>
+      <div class="row between"><button class="btn" data-a="close-modal">${t('cx.keep')}</button><button class="btn danger solid" data-a="p-cancel-ok" data-id="${tu.id}">${t('cx.yes')}</button></div>`);}
+  return '';
+}
+
+/* ---------- shell ---------- */
+function vPatient(){
+  const v=S.view,p=S.pUser&&me();
+  const views={'p.login':pLogin,'p.anam':pAnam,'p.home':pHome,'p.book':pBook,'p.done':pDone,'p.file':pFile};
+  const cur={'p.home':'p.home','p.done':'p.home','p.book':'p.book','p.file':'p.file','p.anam':'p.file'}[v];
+  return `<div class="pshell"><header class="ptop">${brand(t('sub'))}
+    ${p?`<nav aria-label="${t('nav.label')}">
+      <button data-a="nav" data-v="p.home" ${cur==='p.home'?'aria-current="page"':''}>${t('nav.home')}</button>
+      <button data-a="p-newbook" ${cur==='p.book'?'aria-current="page"':''}>${t('nav.book')}</button>
+      <button data-a="nav" data-v="p.file" ${cur==='p.file'?'aria-current="page"':''}>${t('nav.file')}${!p.anam?` <span class="pill warn" aria-hidden="true">!</span><span class="sr-only">(${t('file.pending')})</span>`:''}</button></nav>`:''}
+    <div class="end">
+      ${p?`<span class="avatar" aria-hidden="true">${initials(p.nombre.split(',').reverse().join(' '))}</span><button class="btn sm" data-a="p-logout">${I.out} ${t('logout')}</button>`:''}
+      ${langMenu()}
+    </div>
+  </header><main id="contenido" tabindex="-1">${views[v]()}</main></div>`;
+}
+
+const LANGS=[['es','Español'],['ar','العربية']];
+function langMenu(){
+  const curName=LANGS.find(l=>l[0]===LANG)[1];
+  return `<div class="langdd"><button class="btn sm" id="lang-btn" data-a="lang-toggle" aria-expanded="${!!S.langOpen}" aria-controls="lang-menu" aria-label="${t('lang')}: ${curName}">${I.globe}<span lang="${LANG}">${curName}</span>${svg('<path d="M6 9l6 6 6-6"/>')}</button>
+    ${S.langOpen?`<ul id="lang-menu">${LANGS.map(([c,n])=>`<li><button data-a="lang" data-l="${c}" lang="${c}" ${LANG===c?'aria-current="true"':''}>${n}${LANG===c?I.check:''}</button></li>`).join('')}</ul>`:''}</div>`;
+}
+const steps=(L,cur)=>`<ol class="steps" aria-label="${t('st.label')}">${L.map((l,i)=>`${i?'<li class="sep" aria-hidden="true"></li>':''}<li class="st ${i+1===cur?'on':i+1<cur?'done':''}" ${i+1===cur?'aria-current="step"':''}><b aria-hidden="true">${i+1<cur?'✓':i+1}</b>${l}</li>`).join('')}</ol>`;
+
+/* ---------- ingreso: DNI + contraseña (maqueta, usuarios de prueba abajo) ---------- */
+const DEMO=[['44122123','Demo1234'],['30111222','Demo1234'],['41888999','Demo1234'],['27999555','Demo1234']];
+function pLogin(){
+  return `<div class="narrow stack lg">
+    <div class="stack" style="gap:6px"><h1>${t('login.h1')}</h1><p class="muted">${t('login.p')}</p></div>
+    <form class="card raised stack" data-form="p-login" novalidate>
+      ${errSummary()}
+      ${fld({id:'pl-dni',label:t('f.dni'),req:true,rule:'dni',mono:true,mode:'numeric',auto:'off',hint:t('f.dniHint'),value:S.login.dni})}
+      ${fld({id:'pl-pass',label:t('f.pass'),req:true,type:'password',auto:'current-password',reveal:true,value:S.login.pass})}
+      <button class="btn pri lg block" type="submit">${I.lock} ${t('login.btn')}</button>
+      ${S.login.fail?`<div class="alert warn" role="alert">${I.warn}<div><b>${t('login.errT')}</b><p>${t('login.errP')}</p></div></div>`:''}
+    </form>
+    <p class="muted small">${I.users} ${t('login.new')}</p>
+    <div class="stack" style="gap:8px"><span class="hint">${t('demo')}</span><div class="chips">
+      ${DEMO.map(([d,pw])=>`<button class="chip" data-a="fill" data-dni="${d}" data-pass="${pw}" aria-label="${t('demo.fill')} ${d}"><span class="mono">${d}</span><span class="muted mono ltr">${pw}</span></button>`).join('')}</div></div>
+  </div>`;
+}
+
+/* ---------- ficha de salud (la completa el paciente; la ve solo el profesional) ---------- */
+function anamDraft(){const p=me();return S.anam||(S.anam={dom:p.dom,loc:p.loc,ocup:p.ocup,conds:[...p.conds],alergia:p.alergia,meds:p.meds,emb:p.emb,hem:p.hem,fuma:p.fuma,otra:p.otra})}
+function readAnam(){const a=S.anam;if(!a||!$('an-alergia'))return;Object.assign(a,{dom:val('an-dom'),loc:val('an-loc'),ocup:val('an-ocup'),alergia:val('an-alergia'),meds:val('an-meds'),otra:val('an-otra')})}
+function seg(id,k,opts,label,req){
+  const a=S.anam,err=S.err[id];
+  return `<fieldset class="field"><legend>${label}${req?` <span class="req" aria-hidden="true">*</span><span class="sr-only"> (${t('v.reqsr')})</span>`:''}</legend>
+    <input type="hidden" id="${id}" value="${esc(a[k]||'')}" ${req?'data-req="1"':''}>
+    <div class="seg">${opts.map(([v,l],i)=>`<button type="button" id="${id}-${i}" data-a="an-seg" data-k="${k}" data-f="${id}" data-v="${esc(v)}" aria-pressed="${a[k]===v}" ${err?`aria-describedby="${id}-err"`:''}>${l}</button>`).join('')}</div>
+    <p class="err ${err?'on':''}" id="${id}-err">${err?I.warn+esc(err):''}</p></fieldset>`;
+}
+function pAnam(){
+  const a=anamDraft();
+  return `<div class="mid stack lg">
+    ${crumbs([{label:t('nav.file'),v:'p.file'},{label:t('an.h1')}])}
+    <div class="phead"><div><h1>${t('an.h1')}</h1><p>${I.lock} ${t('an.p')}</p></div></div>
+    <form class="card raised stack lg" data-form="p-anam" novalidate>
+      ${errSummary()}
+      <h2>${t('an.miss')}</h2>
+      <div class="grid3">
+        ${fld({id:'an-dom',label:t('f.dom'),value:a.dom,auto:'street-address'})}
+        ${fld({id:'an-loc',label:t('f.loc'),value:a.loc,auto:'address-level2'})}
+        ${fld({id:'an-ocup',label:t('f.ocup'),value:a.ocup})}
+      </div>
+      <hr class="hr">
+      <fieldset class="field stack"><legend><h2 style="font-size:1.25rem">${t('an.conds')}</h2></legend>
+        <p class="hint">${t('an.condsP')}</p>
+        <div class="tgrid">${CONDS.map(c=>`<button type="button" class="tg" data-a="an-cond" data-c="${esc(c)}" aria-pressed="${a.conds.includes(c)}"><span class="box" aria-hidden="true">${a.conds.includes(c)?'✓':''}</span>${esc(dx(c))}</button>`).join('')}</div></fieldset>
+      <div class="grid2">
+        ${fld({id:'an-alergia',label:t('an.alergia'),req:true,value:a.alergia,hint:t('an.hintNo')})}
+        ${fld({id:'an-meds',label:t('an.meds'),req:true,value:a.meds,hint:t('an.hintNo')})}
+        ${seg('an-emb','emb',[['Sí',t('yes')],['No',t('no')],['No aplica',t('na')]],t('an.emb'),false)}
+        ${seg('an-hem','hem',[['Sí',t('yes')],['No',t('no')]],t('an.hem'),true)}
+        ${seg('an-fuma','fuma',[['Sí',t('yes')],['No',t('no')]],t('an.fuma'),true)}
+        ${fld({id:'an-otra',label:t('an.otra'),value:a.otra})}
+      </div>
+      <div class="row between"><button class="btn" type="button" data-a="nav" data-v="p.file">${I.back} ${t('back')}</button><button class="btn pri" type="submit">${t('an.btn')} ${I.check}</button></div>
+    </form></div>`;
+}
+
+/* ---------- inicio ---------- */
+function pHome(){
+  const p=me(),tu=nextTurnoOf(p.id),c=colaOf(p.id);
+  let main='';
+  if(c){
+    const pr=prof(c.prof),{pos,wait}=queuePos(c),at=c.estado==='atendiendo';
+    const head=at?t('q.goTo',{box:dx(pr.box)}):pos===1?t('q.next'):pos-1===1?t('q.before1'):t('q.beforeN',{n:pos-1});
+    main=`<div class="card raised stack lg">
+      <div class="row between"><h2 class="eyebrow">${t('q.state')}</h2><span class="pill ${at?'ok':'acc'}"><span class="dot"></span>${at?t('q.calling'):t('q.waiting')}</span></div>
+      <div class="qhero" aria-live="polite"><div class="qnum ltr" aria-hidden="true">${at?t('q.now'):pos+'°'}</div>
+        <div class="stack" style="gap:4px"><p style="font-family:var(--f-display);font-size:1.4rem;font-weight:650">${esc(head)}</p>
+        <p class="muted">${at?t('q.waitingYou',{d:esc(pr.nombre)}):t('q.delay',{w:wait,t:c.llegada})}</p></div></div>
+      <ol class="track" aria-label="${t('tr.label')}"><li class="on">${t('tr.rec')}</li><li class="on">${t('tr.wait')}</li><li class="${at?'on':''}" ${at?'aria-current="step"':''}>${t('tr.called')}</li><li>${t('tr.done')}</li></ol>
+      <p class="muted small">${t('q.note')}</p></div>`;
+  } else if(tu){
+    const pr=prof(tu.prof),isToday=tu.fecha===TODAY;
+    main=`<div class="card raised stack lg">
+      <div class="row between"><h2 class="eyebrow">${t('t.your')}</h2><span class="pill ok">${I.check} ${t('t.confirmed')}</span></div>
+      <div class="stack" style="gap:4px"><span class="eyebrow">${t('t.next')}</span><p style="font-family:var(--f-display);font-size:1.75rem;font-weight:650;line-height:1.15">${fmtLong(tu.fecha)} · ${H(tu.hora)}</p><p class="muted">${esc(pr.nombre)} · ${esc(dx(tu.tipo))} · ${esc(sedeTxt())}</p></div>
+      <div class="alert info">${isToday?I.bell:I.cal}<div><b>${isToday?t('t.todayT'):t('t.laterT',{d:fmtLong(tu.fecha)})}</b><p>${isToday?t('t.todayP'):t('t.laterP')}</p></div></div>
+      <div class="row between"><span class="muted small">${t('t.code')} <span class="mono ltr">${tu.id}</span></span>
+        <div class="row"><button class="btn" data-a="p-reprog" data-id="${tu.id}">${I.cal} ${t('t.reprog')}</button><button class="btn danger" data-a="p-cancel" data-id="${tu.id}">${I.x} ${t('t.cancel')}</button></div></div>
+      <p class="hint">${t('t.policy')}</p></div>`;
+  } else {
+    main=`<div class="card raised"><div class="empty"><p class="big">${t('t.none')}</p><p>${t('t.noneP')}</p><div style="margin-top:18px"><button class="btn pri lg" data-a="p-newbook">${t('t.see')} ${I.arrow}</button></div></div></div>`;
+  }
+  const hist=S.hc.filter(h=>h.pac===p.id).sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,3),msg=S.wa.filter(m=>m.pac===p.id).slice(-1)[0];
+  return `<div class="stack lg">
+    <div><h1>${t('home.hi',{n:esc(firstName(p))})}</h1><p class="muted">${t('k.hc')} <span class="mono ltr">${p.hc}</span> · ${t('k.dni')} <span class="mono ltr">${p.dni}</span></p></div>
+    ${!p.anam?`<div class="alert warn" role="status">${I.warn}<div class="stack" style="gap:8px"><b>${t('home.pendT')}</b><p>${t('home.pendP')}</p><div><button class="btn pri" data-a="p-anam">${t('home.pendBtn')} ${I.arrow}</button></div></div></div>`:''}
+    <div class="qhero-wrap">${main}
+      <div class="stack">
+        <div class="card stack"><h2>${t('last')}</h2>${hist.length?hist.map(h=>`<div class="stack" style="gap:4px"><div class="row between"><b>${esc(dx(h.motivo))}</b><span class="mono muted ltr">${fmtShort(h.fecha)}</span></div><span class="muted small">${esc(prof(h.prof).nombre)}</span>${h.ind?`<p class="small"><b>${t('last.ind')}:</b> <span lang="es" dir="auto">${esc(h.ind)}</span></p>`:''}</div>`).join('<hr class="hr">'):`<p class="muted">${t('last.none')}</p>`}</div>
+        ${msg?`<div class="card stack"><h2>${t('last.msg')}</h2>${waBox(msg,t('wa.title'))}</div>`:''}
+      </div></div></div>`;
+}
+
+/* ---------- pedir / reprogramar turno ---------- */
+function pBook(){
+  const b=S.book,p=me();let body='';
+  if(b.step===1){
+    const list=PROFS.filter(x=>!b.tipo||x.tipos.includes(b.tipo));
+    body=`<div class="card raised stack lg">
+      <div class="grid2">${fld({id:'bk-tipo',label:t('bk.tipo'),opts:[['',t('bk.all')],...TIPOS.map(x=>[x,dx(x)])],value:b.tipo})}
+        <div class="field"><span class="lbl">${t('bk.sede')}</span><div class="static">${esc(sedeTxt())}</div></div></div>
+      <div class="list" role="group" aria-label="${t('st.prof')}">${list.map(x=>{const on=b.prof===x.id;return `<div class="lrow ${on?'hl':''}"><span class="avatar" aria-hidden="true">${initials(x.nombre.replace(/^(Dra?\.)\s/,''))}</span><div class="grow"><b>${x.nombre}</b><br><span class="muted small">${esc(dx(x.esp))} · <span class="ltr">${x.mat}</span> · ${t('bk.attends',{d:x.dias.map(dayShort).join(', ')})}</span></div>
+        <button class="btn ${on?'pri':''} sm" data-a="bk-prof" data-id="${x.id}" aria-pressed="${on}" aria-label="${esc(t('bk.chooseAria',{n:x.nombre}))}">${on?I.check+' '+t('bk.chosen'):t('bk.choose')}</button></div>`}).join('')}</div>
+      <div class="row between"><button class="btn" data-a="nav" data-v="p.home">${t('bk.cancel')}</button><div class="stack" style="gap:4px;align-items:flex-end"><button class="btn pri" data-a="bk-step" data-s="2" ${b.prof?'':'disabled'}>${t('bk.cont')} ${I.arrow}</button>${b.prof?'':`<span class="hint">${t('bk.needProf')}</span>`}</div></div></div>`;
+  } else if(b.step===2){
+    const pr=prof(b.prof),sl=b.fecha?slotsFor(b.prof,b.fecha):[],am=sl.filter(x=>x<'13:00'),pm=sl.filter(x=>x>='13:00');
+    const slotBtns=arr=>`<div class="slots">${arr.map(h=>`<button data-a="bk-hora" data-h="${h}" aria-pressed="${b.hora===h}" class="ltr">${h}</button>`).join('')}</div>`;
+    body=`<div class="sum"><div><span class="avatar" aria-hidden="true">${initials(pr.nombre.replace(/^(Dra?\.)\s/,''))}</span><div><b>${pr.nombre}</b><small>${esc(dx(pr.esp))}</small></div></div>
+      <div>${I.clip}<div><b>${esc(dx(b.tipo||'Consulta y revisión'))}</b><small>${t('bk.dur')}</small></div></div>
+      <div>${I.pin}<div><b>${t('bk.sedeC')}</b><small>Av. Colón 1234, Córdoba</small></div></div>
+      <button class="link" style="margin-inline-start:auto" data-a="bk-step" data-s="1">${t('bk.changeProf')}</button></div>
+    <div class="book-grid">
+      <div class="card raised stack"><p class="muted small">${t('bk.month')}</p>${calendar({month:b.month,prof:b.prof,sel:b.fecha,dayAction:'bk-day',monthAction:'bk-month',canPrev:canPrevMonth(b.month)})}</div>
+      <div class="card raised stack">
+        <div><h2>${t('bk.hours')}</h2><p class="muted small">${b.fecha?`${fmtLong(b.fecha)} · ${t('bk.free',{n:sl.length})}`:t('bk.firstDay')}</p></div>
+        ${b.fecha?`<div role="group" aria-label="${esc(t('bk.hoursOf',{d:fmtLong(b.fecha)}))}" class="stack">${am.length?`<span class="eyebrow">${t('bk.am')}</span>${slotBtns(am)}`:''}${pm.length?`<span class="eyebrow">${t('bk.pm')}</span>${slotBtns(pm)}`:''}</div><p class="muted small">${t('bk.tz')}</p>`:''}
+        ${b.hora?`<div class="alert info">${I.cal}<div><b>${fmtLong(b.fecha)} · ${H(b.hora)}</b><p>${pr.nombre} · ${esc(dx(b.tipo||'Consulta y revisión'))}</p></div></div>`:''}
+        <button class="btn pri block" data-a="bk-step" data-s="3" ${b.hora?'':'disabled'}>${t('bk.next3')} ${I.arrow}</button>
+        ${b.hora?'':`<p class="hint">${t('bk.enable')}</p>`}
+      </div></div>`;
+  } else {
+    const pr=prof(b.prof);
+    body=`<form class="book-grid" data-form="bk-confirm" novalidate>
+      <div class="card raised stack">
+        ${errSummary()}
+        <h2>${t('bk.patient')}</h2><p class="muted small">${t('bk.patientP')}</p>
+        <div class="kv"><div><span class="k">${t('k.pac')}</span>${esc(p.nombre)}</div><div><span class="k">${t('k.dni')}</span><span class="mono ltr">${p.dni}</span></div><div><span class="k">${t('k.hc')}</span><span class="mono ltr">${p.hc}</span></div><div><span class="k">${t('k.cov')}</span>${esc(dx(p.os))}</div></div>
+        ${fld({id:'bk-tel',label:t('bk.wa'),req:true,rule:'tel',mono:true,mode:'tel',value:b.tel??p.tel})}
+        ${fld({id:'bk-nota',label:t('bk.nota'),area:true,ph:t('bk.notaPh'),value:b.nota})}
+      </div>
+      <div class="card raised stack">
+        <span class="eyebrow">${t('bk.sum')}</span>
+        <h2>${fmtLong(b.fecha)} · ${H(b.hora)}</h2>
+        <p class="muted">${pr.nombre}<br>${esc(dx(b.tipo||'Consulta y revisión'))} · 30 min<br>${esc(sedeTxt())}</p>
+        <p class="hint">${t('t.policy')}</p>
+        <button class="btn pri lg block" type="submit">${b.reprog?t('bk.confirmRe'):t('bk.confirm')}</button>
+        <button class="btn block" type="button" data-a="bk-step" data-s="2">${I.back} ${t('bk.changeHour')}</button>
+      </div></form>`;
+  }
+  const old=b.reprog&&turno(b.reprog);
+  return `<div class="stack lg"><div class="phead"><div><h1>${t('bk.h1')}</h1><p>${t('bk.p')}</p></div>${steps([t('st.prof'),t('st.date'),t('st.confirm')],b.step)}</div>
+    ${old?`<div class="alert info">${I.cal}<div><b>${t('bk.reprogT',{d:`${fmtLong(old.fecha)} · ${H(old.hora)}`})}</b><p>${t('bk.reprogP')}</p></div></div>`:''}
+    ${body}</div>`;
+}
+
+function pDone(){
+  const tu=turno(S.book.done),p=pac(tu.pac),pr=prof(tu.prof),m=S.wa.filter(x=>x.pac===p.id).slice(-1)[0];
+  return `<div class="mid stack lg">
+    <div class="stack" style="gap:6px"><h1>${S.book.reprog?t('done.h1re'):t('done.h1')}</h1><p class="muted">${t('done.p',{tel:`<span class="mono ltr">${esc(p.tel)}</span>`})}</p></div>
+    <div class="grid2">
+      <div class="card raised stack">
+        <div class="row between"><h2 class="eyebrow">${t('done.card')}</h2><span class="pill ok">${I.check} ${t('t.confirmed')}</span></div>
+        <p style="font-family:var(--f-display);font-size:1.3rem;font-weight:650">${fmtLong(tu.fecha)} · ${H(tu.hora)}</p>
+        <div class="kv"><div><span class="k">${t('k.code')}</span><span class="mono ltr">${tu.id}</span></div><div><span class="k">${t('k.prof')}</span>${pr.nombre}</div><div><span class="k">${t('k.att')}</span>${esc(dx(tu.tipo))}</div><div><span class="k">${t('k.sede')}</span>${t('bk.sedeC')}</div><div><span class="k">${t('k.pac')}</span>${esc(p.nombre)}</div><div><span class="k">${t('k.dni')}</span><span class="mono ltr">${p.dni}</span></div></div>
+        <div class="row"><button class="btn pri" data-a="nav" data-v="p.home">${t('done.go')}</button></div>
+      </div>
+      ${m?waBox(m,t('wa.title')):''}
+    </div></div>`;
+}
+
+/* ---------- mi ficha ---------- */
+function pFile(){
+  const p=me(),yn=v=>v?esc(dx(v)):'—';
+  return `<div class="stack lg">
+    <div class="phead"><div><h1>${t('file.h1')}</h1><p>${t('file.p')}</p></div></div>
+    <div class="grid2">
+      <div class="card stack"><h2>${t('file.personal')}</h2>
+        <div class="kv"><div><span class="k">${t('k.pac')}</span>${esc(p.nombre)}</div><div><span class="k">${t('k.dni')}</span><span class="mono ltr">${p.dni}</span></div><div><span class="k">${t('k.nac')}</span><span class="ltr">${fmtShort(p.nac)}</span></div><div><span class="k">${t('k.tel')}</span><span class="mono ltr">${esc(p.tel)}</span></div><div><span class="k">${t('k.email')}</span>${esc(p.email||'—')}</div><div><span class="k">${t('k.dom')}</span>${esc(p.dom||'—')}</div><div><span class="k">${t('k.ocup')}</span>${esc(p.ocup||'—')}</div></div></div>
+      <div class="card stack"><h2>${t('cov')}</h2><div class="kv"><div><span class="k">${t('k.os')}</span>${esc(dx(p.os))}</div><div><span class="k">${t('k.afil')}</span><span class="mono ltr">${esc(p.afil||'—')}</span></div></div></div>
+    </div>
+    <div class="card stack"><div class="row between"><h2>${t('file.health')}</h2>${p.anam?`<span class="pill ok">${I.check} ${t('file.done')}</span>`:`<span class="pill warn">${I.warn} ${t('file.pending')}</span>`}</div>
+      <p class="muted small">${I.lock} ${t('file.private')}</p>
+      ${p.anam?`<div class="kv"><div><span class="k">${t('k.conds')}</span>${p.conds.length?esc(p.conds.map(dx).join(', ')):t('none')}</div><div><span class="k">${t('k.alergia')}</span>${yn(p.alergia)}</div><div><span class="k">${t('k.meds')}</span>${yn(p.meds)}</div><div><span class="k">${t('k.fuma')}</span>${yn(p.fuma)}</div></div>`:''}
+      <div><button class="btn ${p.anam?'':'pri'}" data-a="p-anam">${p.anam?t('file.edit'):t('home.pendBtn')} ${I.arrow}</button></div></div>
+  </div>`;
+}
+
+/* ---------- acciones ---------- */
+const waTxt=(k,p,tu)=>t(k,{n:firstName(p),d:fmtLong(tu.fecha),h:tu.hora,p:prof(tu.prof).nombre,t:dx(tu.tipo),sede:sedeTxt(),c:tu.id});
+function beforeAction(){if(S.view==='p.anam')readAnam()}
+function onInvalid(f){
+  if(f==='p-anam'){readAnam();['an-hem','an-fuma'].forEach(id=>{if(S.err[id])S.err[id]=t('an.pick')});if(/^an-(hem|fuma)$/.test(S.focusId))S.focusId+='-0'}
+  if(f==='p-login')S.login={dni:val('pl-dni'),pass:$('pl-pass').value,fail:false};
+}
+const A={...BASE_A,
+  nav(d){S.view=d.v;S.err={};window.scrollTo(0,0)},
+  'lang-toggle'(){S.langOpen=!S.langOpen;S.focusId='lang-btn'},
+  lang(d){setLang(d.l);S.err={};S.langOpen=false;S.focusId='lang-btn'},
+  fill(d){const a=$('pl-dni'),b=$('pl-pass');a.value=d.dni;b.value=d.pass;paintField(a,'');paintField(b,'');return false},
+  'p-logout'(){S.pUser=null;S.login={fail:false};S.view='p.login';S.book=null;S.anam=null},
+  'p-anam'(){S.anam=null;S.err={};S.view='p.anam';window.scrollTo(0,0)},
+  'p-newbook'(){S.book={step:1,prof:null,tipo:'',month:monthStart(parse(TODAY)),fecha:null,hora:null};S.err={};S.view='p.book'},
+  'p-reprog'(d){const tu=turno(d.id);S.book={step:2,prof:tu.prof,tipo:tu.tipo,month:monthStart(parse(TODAY)),fecha:null,hora:null,reprog:tu.id};S.err={};S.view='p.book';window.scrollTo(0,0)},
+  'p-cancel'(d){S.modal={type:'cancel',id:d.id}},
+  'p-cancel-ok'(d){const tu=turno(d.id),p=me();tu.estado='cancelado';sendWA(p,waTxt('wa.cancel',p,tu));S.modal=null;toast(t('cx.ok',{d:fmtLong(tu.fecha)}),true)},
+  'an-cond'(d){const a=S.anam,i=a.conds.indexOf(d.c);i<0?a.conds.push(d.c):a.conds.splice(i,1)},
+  'an-seg'(d){S.anam[d.k]=d.v;delete S.err[d.f]},
+  'bk-prof'(d){S.book.prof=d.id;S.book.fecha=null;S.book.hora=null},
+  'bk-step'(d){const b=S.book;if(b.step===3&&$('bk-tel')){b.tel=val('bk-tel');b.nota=val('bk-nota')}b.step=+d.s;S.err={};window.scrollTo(0,0)},
+  'bk-month'(d){const m=S.book.month;S.book.month=new Date(m.getFullYear(),m.getMonth()+ +d.dir,1)},
+  'bk-day'(d){S.book.fecha=d.d;S.book.hora=null},
+  'bk-hora'(d){S.book.hora=d.h},
+};
+const F={
+  'p-login'(){
+    const dni=val('pl-dni').replace(/\D/g,''),pass=$('pl-pass').value;S.login={dni,fail:false};
+    const p=S.patients.find(x=>x.dni===dni&&x.pass===pass);
+    // mismo mensaje si el DNI no existe o la contraseña no coincide: no revela si alguien es paciente.
+    // Tras un intento fallido la contraseña no se conserva.
+    if(!p){S.login.fail=true;return}
+    S.pUser=p.id;S.login={fail:false};S.view='p.home';
+  },
+  'p-anam'(){
+    readAnam();const p=me();Object.assign(p,S.anam,{anam:true});S.anam=null;
+    toast(t('an.ok'));
+    S.view='p.file';
+    window.scrollTo(0,0);
+  },
+  'bk-confirm'(){
+    const b=S.book,p=me(),tel=val('bk-tel');if(tel)p.tel=tel;
+    const tu={id:newTurnoId(),pac:p.id,prof:b.prof,fecha:b.fecha,hora:b.hora,tipo:b.tipo||'Consulta y revisión',estado:'confirmado'};
+    if(b.reprog)turno(b.reprog).estado='cancelado';
+    S.turnos.push(tu);sendWA(p,waTxt(b.reprog?'wa.reprog':'wa.confirm',p,tu));b.done=tu.id;S.view='p.done';window.scrollTo(0,0);
+  },
+};
+
+bindEvents();
+/* el desplegable de idioma se cierra con Esc, al hacer clic afuera o al mover el foco fuera de él */
+const closeLang=()=>{if(!S.langOpen)return;S.langOpen=false;const b=$('lang-btn');if(b)b.setAttribute('aria-expanded','false');$('lang-menu')?.remove()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.langOpen){e.stopImmediatePropagation();closeLang();$('lang-btn')?.focus()}},true);
+document.addEventListener('click',e=>{if(S.langOpen&&!e.target.closest('.langdd'))closeLang()},true);
+document.addEventListener('focusin',e=>{if(S.langOpen&&!e.target.closest('.langdd'))closeLang()});
+document.addEventListener('change',e=>{
+  if(e.target.id==='bk-tipo'){const b=S.book;b.tipo=e.target.value;if(b.prof&&b.tipo&&!prof(b.prof).tipos.includes(b.tipo))b.prof=null;render()}
+});
+setLang('es');
+render();
+</script>
+</body>
+</html>

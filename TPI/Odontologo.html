@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Consultorio Odontológico — Panel profesional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="comun.css">
+  <style>
+/* odontograma: piezas de 44x48 px para poder tocarlas con guantes */
+.odo{display:flex;flex-direction:column;gap:6px;overflow-x:auto;padding-bottom:4px}
+.odo .r{display:flex;gap:4px;justify-content:center;min-width:780px}
+.odo .r .mid{width:12px}
+.odo button{width:44px;height:48px;border-radius:8px 8px 12px 12px;border:1px solid var(--line-strong);background:var(--surface);font-family:var(--f-mono);font-size:.85rem;cursor:pointer}
+.odo .r.low button{border-radius:12px 12px 8px 8px}
+.odo button:hover{border-color:var(--accent)}
+.odo button:active{background:var(--accent-soft)}
+.odo button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+/* ofrecimiento de turnos de seguimiento */
+.offer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.offer{grid-template-columns:1fr}}
+.offer .o{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.offer .o .d{font-family:var(--f-display);font-size:1.05rem}
+.callbanner{background:var(--accent);color:var(--accent-ink);border-radius:var(--r-lg);padding:16px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.callbanner .grow{flex:1;min-width:200px}
+.callbanner .btn{background:transparent;color:#FFFFFF;border-color:rgba(255,255,255,.85);font-weight:600}
+.callbanner .btn:hover{background:rgba(255,255,255,.12)}
+.review dt{font-size:.8125rem;color:var(--muted);font-weight:600}
+.review dd{margin:0 0 10px}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="comun.js"></script>
+<script>
+/* ---------- estado ---------- */
+let S;
+function reset(){S={...seed(),view:'o.login',login:{},toast:null,modal:null,oUser:'L',offer:null,att:null,hcq:'',viewPac:null,err:{},focusId:null}}
+reset();
+const app=$('app');
+
+function renderView(){
+  app.innerHTML=`${S.view==='o.login'?oLogin():vStaff()}${vModal()}${toastHTML()}`;
+}
+
+function vModal(){
+  const m=S.modal;if(!m)return '';
+  if(m.type==='kbd')return modalWrap(kbdModal());
+  if(m.type==='hcdet'){const h=m.h;
+    return modalWrap(`<div class="row between"><h2 id="dlg-t">${esc(h.motivo)} · ${fmtShort(h.fecha)}</h2><button class="btn sm" data-a="close-modal">Cerrar</button></div>
+      <div class="kv"><div><span class="k">Profesional</span>${esc(prof(h.prof).nombre)}</div><div><span class="k">Piezas (FDI)</span><span class="mono">${esc(h.piezas)}</span></div></div>
+      <div><span class="k eyebrow">Procedimiento</span><p>${esc(h.proc)}</p></div>
+      <div><span class="k eyebrow">Diagnóstico</span><p>${esc(h.diag)}</p></div>
+      ${h.ind?`<div><span class="k eyebrow">Indicaciones al paciente</span><p>${esc(h.ind)}</p></div>`:''}
+      <div><span class="k eyebrow">Notas clínicas</span><p>${esc(h.notas||'—')}</p></div>`);}
+  if(m.type==='confirm-hc'){const a=S.att;
+    // prevención de errores: la historia clínica no se puede borrar, así que se revisa antes de guardar
+    return modalWrap(`<h2 id="dlg-t">Revisá antes de guardar</h2>
+      <div class="alert warn">${I.warn}<div><b>Este registro no se puede borrar</b><p>Si después encontrás un error, se corrige agregando una nueva entrada.</p></div></div>
+      <dl class="review">
+        <dt>Motivo</dt><dd>${esc(a.motivo)}</dd>
+        <dt>Piezas tratadas</dt><dd class="mono">${a.teeth.length?a.teeth.join(', '):'Ninguna'}</dd>
+        <dt>Procedimiento</dt><dd>${esc(a.proc)}</dd>
+        <dt>Diagnóstico</dt><dd>${esc(a.diag||'—')}</dd>
+        <dt>Indicaciones al paciente</dt><dd>${esc(a.ind||'—')}</dd>
+        <dt>Notas clínicas</dt><dd>${esc(a.notas||'—')}</dd>
+      </dl>
+      <div class="row between"><button class="btn" data-a="close-modal">${I.back} Seguir editando</button><button class="btn pri" data-a="hc-save">Guardar historia clínica ${I.check}</button></div>`);}
+  return '';
+}
+
+/* ---------- shell ---------- */
+const NAV=[['o.queue','Sala de espera',I.queue],['o.agenda','Agenda',I.cal],['o.hcl','Historias clínicas',I.clip]];
+function vStaff(){
+  const v=S.view,sec={'o.patient':'o.queue','o.attend':'o.queue','o.next':'o.queue','o.hcp':S.att?'o.queue':'o.hcl'}[v]||v;
+  const who=prof(S.oUser),waiting=S.cola.filter(c=>c.prof===S.oUser&&c.estado==='espera').length;
+  const views={'o.queue':oQueue,'o.patient':oPatient,'o.attend':oAttend,'o.next':oNext,'o.agenda':agenda,'o.hcl':hcList,'o.hcp':hcPersonal};
+  return `<div class="swrap"><div class="sshell"><aside class="side">${brand('Panel profesional')}
+    <nav aria-label="Secciones">${NAV.map(([k,l,ic])=>`<button data-a="nav" data-v="${k}" ${sec===k?'aria-current="page"':''}>${ic}${l}${k==='o.queue'&&waiting?`<span class="badge" aria-label="${waiting} en espera">${waiting}</span>`:''}</button>`).join('')}</nav>
+    <div class="who"><div class="me"><span class="avatar" aria-hidden="true">${initials(who.nombre.replace(/^(Dra?\.)\s/,''))}</span><div style="min-width:0"><b class="small">${who.nombre}</b><br><span class="muted small">${who.esp}</span></div></div>
+      <button class="link small" data-a="kbd-help">${I.kbd} Atajos de teclado</button>
+      <button class="btn sm" data-a="logout">${I.out} Cerrar sesión</button></div>
+  </aside><main class="main" id="contenido" tabindex="-1"><div class="main-in">${(views[v]||(()=>''))()}</div></main></div></div>`;
+}
+
+function oLogin(){return staffLogin({sub:'Panel profesional',title:'Ingreso profesional',lead:'Ingresá con tu DNI y tu contraseña para ver tu consultorio y la sala de espera.',users:PROFS})}
+
+/* ---------- sala de espera ---------- */
+const nextWaiting=()=>S.cola.find(c=>c.prof===S.oUser&&c.estado==='espera');
+const current=()=>S.cola.find(c=>c.prof===S.oUser&&c.estado==='atendiendo');
+function oQueue(){
+  const pr=prof(S.oUser),cur=current(),wait=S.cola.filter(c=>c.prof===S.oUser&&c.estado==='espera');
+  const done=S.salida.filter(s=>s.prof===S.oUser).length;
+  return `<div class="phead"><div><h1>Sala de espera</h1><p>${cap(fmtLong(TODAY))} · ${pr.box}</p></div>
+    <div class="row"><span class="pill acc">${wait.length} en espera</span><span class="pill">${done} atendidos hoy</span></div></div>
+  ${cur?`<div class="callbanner">${I.bell}<div class="grow"><b>En atención: ${esc(pac(cur.pac).nombre)}</b><br><span class="small">Siendo atendido desde las ${cur.llamado||'—'} h</span></div><button class="btn" data-a="o-open" data-id="${cur.id}">Continuar atención ${I.arrow}</button></div>`:''}
+  ${wait.length?`<div class="list">${wait.map((c,i)=>{const p=pac(c.pac),t=turno(c.turno),al=p.anam?alertsOf(p):[],next=i===0&&!cur;
+    return `<div class="lrow ${next?'hl':''}"><span class="pos" aria-hidden="true">${i+1}</span><div class="grow"><b>${esc(p.nombre)}</b> ${next?'<span class="pill ok">Próximo</span>':''}<br><span class="muted small">${esc(t?.tipo||'Consulta')} · turno ${t?.hora||'—'} · llegó ${c.llegada} h · ${esc(p.os)}</span></div>
+      ${al.length?`<span class="pill bad">${I.warn} ${al.length} alerta${al.length>1?'s':''}</span>`:''}${!p.anam?'<span class="pill warn">Ficha de salud pendiente</span>':''}
+      <span class="muted small mono">espera ~${queuePos(c).wait} min</span>
+      <button class="btn ${next?'pri':''} sm" data-a="o-call" data-id="${c.id}" ${cur?'disabled':''} aria-label="Llamar a ${esc(p.nombre)}">Llamar</button></div>`}).join('')}</div>
+    ${cur?'<p class="muted small">Para llamar al siguiente, primero terminá la atención en curso.</p>':''}`
+  :(!cur?`<div class="card"><div class="empty"><p class="big">No hay pacientes en la sala de espera</p><p>Cuando recepción anuncie la llegada de un paciente para tu consultorio, aparece en esta lista.</p></div></div>`:'')}`;
+}
+
+function patientInfo(p){
+  const al=p.anam?alertsOf(p):[],hist=S.hc.filter(h=>h.pac===p.id),nt=nextTurnoOf(p.id);
+  return `${al.length?`<div class="alert">${I.warn}<div><b>Alerta médica</b><p>${esc(al.join(' · '))}</p></div></div>`:''}
+  ${!p.anam?`<div class="alert warn">${I.warn}<div><b>Cuestionario de salud pendiente</b><p>El paciente todavía no lo completó en su portal. Preguntale por alergias, medicación y antecedentes antes de empezar.</p></div></div>`:''}
+  <div class="grid2">
+    <div class="card stack"><h2>Datos personales y contacto</h2>
+      <div class="kv"><div><span class="k">DNI</span>${ltr(`<span class="mono">${p.dni}</span>`)}</div><div><span class="k">Edad</span>${age(p.nac)} años</div><div><span class="k">Ocupación</span>${esc(p.ocup||'—')}</div><div><span class="k">Teléfono</span>${ltr(`<span class="mono">${esc(p.tel)}</span>`)}</div><div><span class="k">Correo</span>${esc(p.email||'—')}</div><div><span class="k">Domicilio</span>${esc(p.dom||'—')}</div></div></div>
+    <div class="card stack"><h2>Antecedentes médicos</h2>
+      ${p.anam?`<div class="kv"><div><span class="k">Condiciones</span>${p.conds.length?esc(p.conds.join(', ')):'Sin antecedentes'}</div><div><span class="k">Alergias</span>${esc(p.alergia)}</div><div><span class="k">Medicación</span>${esc(p.meds)}</div><div><span class="k">Fuma</span>${esc(p.fuma)}</div>${p.emb?`<div><span class="k">Embarazo</span>${esc(p.emb)}</div>`:''}${p.otra?`<div><span class="k">Otros</span>${esc(p.otra)}</div>`:''}</div>`:'<p class="muted">Sin datos: el cuestionario está pendiente.</p>'}</div>
+    <div class="card stack"><h2>Cobertura</h2><div class="kv"><div><span class="k">Obra social</span>${esc(p.os)}</div><div><span class="k">N° de afiliado</span><span class="mono">${esc(p.afil||'—')}</span></div></div></div>
+    <div class="card stack"><h2>Próximo turno</h2>${nt?`<p><b>${fmtLong(nt.fecha)} · ${nt.hora} h</b><br><span class="muted small">${prof(nt.prof).nombre} · ${esc(nt.tipo)}</span></p>`:'<p class="muted">Sin turnos pendientes</p>'}</div>
+  </div>
+  <div class="card stack"><div class="row between"><h2>Últimas atenciones</h2><span class="muted small">${hist.length} registros</span></div>
+    ${hist.length?hist.slice(0,3).map(h=>`<div class="row between"><div style="min-width:0"><b>${esc(h.motivo)}</b> · <span class="muted">${esc(h.proc)}</span><br><span class="muted small">${esc(prof(h.prof).nombre)} · piezas <span class="mono">${esc(h.piezas)}</span></span></div><span class="mono muted">${fmtShort(h.fecha)}</span></div>`).join('<hr class="hr">'):'<p class="muted">Primera consulta.</p>'}</div>`;
+}
+
+const attPac=()=>pac(S.cola.find(x=>x.id===S.att.cola).pac);
+function oPatient(){
+  const c=S.cola.find(x=>x.id===S.att.cola),p=pac(c.pac),pr=prof(c.prof);
+  return `${crumbs([{label:'Sala de espera',v:'o.queue'},{label:p.nombre}])}
+  <div class="callbanner">${I.bell}<div class="grow"><b>Llamaste a ${esc(p.nombre)}</b><br><span class="small">Pantalla de sala: "${esc(p.nombre.split(',')[0])} — ${pr.box}" · Estado: siendo atendido</span></div><button class="btn" data-a="o-recall">Volver a llamar</button></div>
+  <div class="phead"><div><h1>${esc(p.nombre)}</h1><p><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${age(p.nac)} años</p></div>
+    <div class="row"><button class="btn" data-a="o-hcp" data-id="${p.id}">Ver historia clínica completa</button><button class="btn pri" data-a="o-start">Iniciar atención ${I.arrow}</button></div></div>
+  ${patientInfo(p)}`;
+}
+
+function oAttend(){
+  const a=S.att,c=S.cola.find(x=>x.id===a.cola),p=pac(c.pac),t=turno(c.turno);
+  const up=[18,17,16,15,14,13,12,11,0,21,22,23,24,25,26,27,28],lo=[48,47,46,45,44,43,42,41,0,31,32,33,34,35,36,37,38];
+  const row=(arr,cls)=>`<div class="r ${cls}">${arr.map(n=>n?`<button type="button" data-a="tooth" data-n="${n}" aria-pressed="${a.teeth.includes(n)}" aria-label="Pieza ${n}">${n}</button>`:'<span class="mid" aria-hidden="true"></span>').join('')}</div>`;
+  const al=p.anam?alertsOf(p):[];
+  return `${crumbs([{label:'Sala de espera',v:'o.queue'},{label:p.nombre,v:'o.patient'},{label:'Atención'}])}
+  <div class="phead"><div><h1>Atención · ${esc(p.nombre)}</h1><p>${esc(t?.tipo||'Consulta')} · ${cap(fmtLong(TODAY))}</p></div>
+    <span class="pill ok"><span class="dot"></span>Siendo atendido</span></div>
+  ${al.length?`<div class="alert">${I.warn}<div><b>Alerta médica</b><p>${esc(al.join(' · '))}</p></div></div>`:''}
+  ${!p.anam?`<div class="alert warn">${I.warn}<div><b>Cuestionario de salud pendiente</b><p>Confirmá alergias y medicación con el paciente.</p></div></div>`:''}
+  <form class="card raised stack lg" data-form="o-hc" novalidate>
+    ${errSummary()}
+    <fieldset class="field stack"><legend><h2 style="font-size:1.05rem">Piezas tratadas</h2></legend>
+      <p class="hint">Notación FDI. Tocá o presioná Enter sobre cada pieza para marcarla.</p>
+      <div class="odo">${row(up,'')}${row(lo,'low')}</div>
+      <p class="small" aria-live="polite">Seleccionadas: <span class="mono">${a.teeth.length?a.teeth.join(', '):'ninguna'}</span></p></fieldset>
+    <div class="grid2">
+      ${fld({id:'at-motivo',label:'Motivo',opts:TIPOS,value:a.motivo||t?.tipo})}
+      ${fld({id:'at-proc',label:'Procedimiento realizado',req:true,value:a.proc,ph:'Ej.: Obturación compuesta clase I'})}
+      ${fld({id:'at-diag',label:'Diagnóstico',value:a.diag,ph:'Ej.: Caries oclusal'})}
+      ${fld({id:'at-ind',label:'Indicaciones al paciente',value:a.ind,ph:'Ej.: No comer por 2 h',hint:'Al cerrar la atención podés enviárselas por WhatsApp.'})}
+    </div>
+    ${fld({id:'at-notas',label:'Notas clínicas',area:true,value:a.notas,hint:'Solo las ve el equipo profesional.'})}
+    <div class="row between"><button class="btn" type="button" data-a="nav" data-v="o.patient">${I.back} Volver a la ficha</button><button class="btn pri" type="submit">Revisar y guardar ${I.arrow}</button></div>
+  </form>`;
+}
+
+function oNext(){
+  const a=S.att,p=attPac(),waiting=S.cola.filter(c=>c.prof===S.oUser&&c.estado==='espera').length;
+  let follow='';
+  if(a.need===undefined) follow=`<div class="card raised stack lg"><h2>¿${esc(firstName(p))} necesita un turno de seguimiento?</h2>
+      <div class="row"><button class="btn pri lg" data-a="o-need" data-v="1">Sí, ofrecer turnos</button><button class="btn lg" data-a="o-need" data-v="0">No necesita</button></div></div>`;
+  else if(a.need) follow=`<div class="card raised stack lg">${offerPanel()}</div>`;
+  const canQuit=a.need===false||(S.offer&&(S.offer.result||S.offer.ended));
+  return `${crumbs([{label:'Sala de espera',v:'o.queue'},{label:p.nombre},{label:'Cierre de la atención'}])}
+  <div class="phead"><div><span class="pill ok">${I.check} Historia clínica guardada</span><h1 style="margin-top:8px">Cierre de la atención</h1><p>${esc(p.nombre)}</p></div></div>
+  ${a.ind?`<div class="card stack"><div class="row between"><div><h2>Indicaciones para ${esc(firstName(p))}</h2><p class="muted small">"${esc(a.ind)}"</p></div>
+      ${a.indSent?`<span class="pill ok">${I.check} Enviadas a las ${a.indSent.at}</span>`:`<button class="btn pri" data-a="send-ind">${I.msg} Enviar por WhatsApp</button>`}</div>
+      ${a.indSent?waBox(a.indSent):''}</div>`:''}
+  ${follow}
+  ${canQuit?`<div class="card stack"><p>El paciente sale de tu consultorio y recepción completa el cierre administrativo.</p>
+    <div class="row">${waiting?`<button class="btn pri" data-a="o-finish" data-next="1">Finalizar y llamar al siguiente ${I.arrow}</button>`:''}<button class="btn ${waiting?'':'pri'}" data-a="o-finish" data-next="0">Finalizar y volver a la sala de espera</button></div></div>`:''}`;
+}
+
+function offerPanel(){
+  const o=S.offer,p=pac(o.pac);
+  if(o.result){const t=turno(o.result),m=S.wa.filter(x=>x.pac===p.id).slice(-1)[0];
+    return `<div class="grid2"><div class="stack"><span class="pill ok" style="align-self:flex-start">${I.check} Turno asignado</span><h2>${fmtLong(t.fecha)} · ${t.hora} h</h2><p class="muted">${prof(t.prof).nombre} · ${esc(t.tipo)} · código <span class="mono">${t.id}</span></p>
+      <p class="small muted">Constancia enviada a ${ltr(`<span class="mono">${esc(p.tel)}</span>`)}</p></div>${m?waBox(m):''}</div>`;}
+  if(o.ended) return `<div class="alert warn">${I.warn}<div><b>Sin turno asignado</b><p>${esc(p.nombre)} no aceptó las opciones. Puede pedirlo más adelante desde su portal o en recepción.</p></div></div>`;
+  if(o.asking) return `<div class="stack"><h2>¿Buscar más opciones?</h2><p class="muted">Podés mostrar los siguientes días disponibles o cambiar de profesional.</p>
+    <div class="row"><button class="btn pri" data-a="offer-more">Sí, ver más opciones</button><button class="btn" data-a="offer-stop">No, terminar sin turno</button></div></div>`;
+  const sl=offerSlots(o.prof,o.page);
+  return `<div class="stack">
+    <div class="row between"><div><h2>Turnos disponibles para ${esc(p.nombre)}</h2><p class="muted small">Opciones ${o.page*3+1}–${o.page*3+sl.length} · ofrecéselas al paciente</p></div></div>
+    <div class="grid2">${fld({id:'of-prof',label:'Profesional',opts:PROFS.map(x=>[x.id,`${x.nombre} · ${x.esp}`]),value:o.prof})}${fld({id:'of-tipo',label:'Tipo de atención',opts:prof(o.prof).tipos,value:o.tipo})}</div>
+    <div class="offer">${sl.map((s,i)=>`<div class="o"><span class="eyebrow">Opción ${o.page*3+i+1}</span><span class="d">${fmtLong(s.fecha)}</span><span class="mono">${s.hora} h</span><button class="btn pri sm" data-a="offer-accept" data-f="${s.fecha}" data-h="${s.hora}" aria-label="Asignar el turno del ${fmtLong(s.fecha)} a las ${s.hora}">Asignar este turno</button></div>`).join('')||'<p class="muted">Sin disponibilidad en los próximos 90 días.</p>'}</div>
+    <div><button class="btn" data-a="offer-reject">No acepta ninguna opción</button></div></div>`;
+}
+
+/* ---------- agenda e historias clínicas ---------- */
+function agenda(){
+  const l=S.turnos.filter(t=>t.fecha===TODAY&&t.estado!=='cancelado'&&t.prof===S.oUser).sort((a,b)=>a.hora.localeCompare(b.hora));
+  const st=t=>{const c=S.cola.find(x=>x.turno===t.id);if(t.estado==='atendido')return '<span class="pill ok">Atendido</span>';if(c?.estado==='atendiendo')return '<span class="pill acc">En atención</span>';if(c?.estado==='espera')return '<span class="pill warn">En sala de espera</span>';return '<span class="pill">Pendiente</span>'};
+  const up=S.turnos.filter(t=>t.fecha>TODAY&&t.estado==='confirmado'&&t.prof===S.oUser).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora)).slice(0,8);
+  const rows=(arr,c1)=>arr.map(t=>`<tr><td class="num mono" data-label="${c1}">${t.fecha===TODAY?t.hora:fmtShort(t.fecha)+' '+t.hora}</td><td data-label="Paciente"><b>${esc(pac(t.pac).nombre)}</b><br><span class="muted small">DNI <span class="mono">${pac(t.pac).dni}</span></span></td><td data-label="Atención">${esc(t.tipo)}</td><td class="mono" data-label="Código">${t.id}</td><td data-label="Estado">${t.fecha===TODAY?st(t):'<span class="pill ok">Confirmado</span>'}</td></tr>`).join('');
+  return `<div class="phead"><div><h1>Agenda</h1><p>${cap(fmtLong(TODAY))} · ${prof(S.oUser).nombre}</p></div></div>
+  <h2>Hoy</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Hora</th><th>Paciente</th><th>Atención</th><th>Código</th><th>Estado</th></tr></thead><tbody>${rows(l,'Hora')||'<tr><td colspan="5" data-label="" class="muted">Sin turnos hoy.</td></tr>'}</tbody></table></div>
+  <h2>Próximos días</h2>
+  <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Paciente</th><th>Atención</th><th>Código</th><th>Estado</th></tr></thead><tbody>${rows(up,'Fecha')||'<tr><td colspan="5" data-label="" class="muted">Sin turnos próximos.</td></tr>'}</tbody></table></div>`;
+}
+
+function hcList(){
+  const q=S.hcq.toLowerCase();
+  const pats=S.patients.map(p=>({p,last:S.hc.filter(h=>h.pac===p.id).sort((a,b)=>b.fecha.localeCompare(a.fecha))[0]})).filter(x=>x.last&&(!q||x.p.nombre.toLowerCase().includes(q)||x.p.dni.includes(q))).sort((a,b)=>b.last.fecha.localeCompare(a.last.fecha));
+  return `<div class="phead"><div><h1>Historias clínicas</h1><p>Pacientes atendidos, ordenados por última atención</p></div></div>
+  <div class="card"><div class="field"><label for="hc-q">Buscar por DNI o nombre del paciente</label><input class="input" id="hc-q" data-input="hcq" value="${esc(S.hcq)}" placeholder="Ej.: Rocío Lombardi o 40155234" autocomplete="off"></div></div>
+  <div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Última atención</th><th>Profesional</th><th>Motivo</th><th>Acciones</th></tr></thead><tbody>
+  ${pats.map(({p,last})=>`<tr><td data-label="Paciente"><b>${esc(p.nombre)}</b><br><span class="muted small mono">${p.hc}</span></td><td class="num mono" data-label="Última atención">${fmtShort(last.fecha)}</td><td data-label="Profesional">${prof(last.prof).nombre}</td><td data-label="Motivo">${esc(last.motivo)}</td><td data-label=""><button class="btn sm" data-a="o-hcp" data-id="${p.id}" aria-label="Abrir la historia clínica de ${esc(p.nombre)}">Abrir</button></td></tr>`).join('')||'<tr><td colspan="5" data-label="" class="muted">Sin resultados.</td></tr>'}
+  </tbody></table></div>`;
+}
+
+function hcPersonal(){
+  const p=pac(S.viewPac),hist=S.hc.filter(h=>h.pac===p.id).sort((a,b)=>b.fecha.localeCompare(a.fecha)),al=p.anam?alertsOf(p):[];
+  const path=S.att?[{label:'Sala de espera',v:'o.queue'},{label:p.nombre,v:'o.patient'},{label:'Historia clínica'}]:[{label:'Historias clínicas',v:'o.hcl'},{label:p.nombre}];
+  return `${crumbs(path)}
+  <div class="phead"><div><h1>${esc(p.nombre)}</h1><p><span class="mono">${p.hc}</span> · DNI <span class="mono">${p.dni}</span> · ${age(p.nac)} años · ${esc(p.os)}</p></div></div>
+  ${al.length?`<div class="alert">${I.warn}<div><b>Alerta médica</b><p>${esc(al.join(' · '))}</p></div></div>`:''}
+  <div class="tbl-wrap"><table><thead><tr><th>Fecha</th><th>Profesional</th><th>Motivo</th><th>Piezas</th><th>Procedimiento</th><th>Acciones</th></tr></thead><tbody>
+  ${hist.map((h,i)=>`<tr><td class="num mono" data-label="Fecha">${fmtShort(h.fecha)}</td><td data-label="Profesional">${prof(h.prof).nombre}</td><td data-label="Motivo">${esc(h.motivo)}</td><td class="mono" data-label="Piezas">${esc(h.piezas)}</td><td data-label="Procedimiento">${esc(h.proc)}<br><span class="muted small">${esc(h.diag)}</span></td><td data-label=""><button class="btn sm" data-a="hc-det" data-pac="${p.id}" data-i="${i}" aria-label="Ver el detalle de la atención del ${fmtShort(h.fecha)}">Detalle</button></td></tr>`).join('')||'<tr><td colspan="6" data-label="" class="muted">Sin registros.</td></tr>'}
+  </tbody></table></div>
+  <p class="muted small">Los registros de historia clínica no se eliminan. Para corregir uno, se agrega una nueva entrada que lo rectifica.</p>`;
+}
+
+/* ---------- acciones ---------- */
+function saveAtt(){if(!$('at-proc'))return;Object.assign(S.att,{motivo:val('at-motivo'),proc:val('at-proc'),diag:val('at-diag'),ind:val('at-ind'),notas:val('at-notas')})}
+function beforeAction(a){if(S.view==='o.attend'&&a!=='tooth')saveAtt()}
+function onInvalid(f){if(f==='login')keepLogin();else saveAtt()}
+function startOffer(pid,profId){S.offer={pac:pid,prof:profId,tipo:prof(profId).tipos[0],page:0}}
+function callPatient(c){
+  c.estado='atendiendo';c.llamado=nowHM();S.att={cola:c.id,teeth:[]};S.offer=null;S.err={};S.view='o.patient';
+  toast(`Llamando a ${pac(c.pac).nombre} a ${prof(c.prof).box}`);window.scrollTo(0,0);
+}
+const A={...BASE_A,
+  nav(d){S.view=d.v;window.scrollTo(0,0)},
+  logout(){S.login={};S.att=null;S.offer=null;S.view='o.login'},
+  'o-call'(d){callPatient(S.cola.find(x=>x.id===d.id))},
+  'o-open'(d){if(!S.att||S.att.cola!==d.id)S.att={cola:d.id,teeth:[]};S.view=S.att.saved?'o.next':'o.patient'},
+  'o-recall'(){toast('Se volvió a anunciar al paciente en la sala de espera')},
+  'o-start'(){S.view='o.attend';window.scrollTo(0,0)},
+  'o-hcp'(d){S.viewPac=d.id;S.view='o.hcp'},
+  tooth(d){const n=+d.n,a=S.att.teeth,i=a.indexOf(n);saveAtt();i<0?a.push(n):a.splice(i,1);a.sort((x,y)=>x-y)},
+  'hc-save'(){
+    const a=S.att,c=S.cola.find(x=>x.id===a.cola);
+    S.hc.push({pac:c.pac,fecha:TODAY,prof:c.prof,motivo:a.motivo,piezas:a.teeth.length?a.teeth.join(', '):'—',proc:a.proc,diag:a.diag||'—',notas:a.notas||'',ind:a.ind||''});
+    a.saved=true;S.modal=null;S.view='o.next';toast('Historia clínica guardada',true);window.scrollTo(0,0);
+  },
+  'send-ind'(){const a=S.att,p=attPac();a.indSent=sendWA(p,`Consultorio Odontológico\nHola ${firstName(p)}, estas son las indicaciones de tu atención de hoy con ${prof(S.oUser).nombre}:\n\n${a.ind}\n\nAnte cualquier duda, respondé este mensaje.`)},
+  'o-need'(d){const c=S.cola.find(x=>x.id===S.att.cola);S.att.need=d.v==='1';if(S.att.need)startOffer(c.pac,c.prof)},
+  'o-finish'(d){
+    const c=S.cola.find(x=>x.id===S.att.cola);c.estado='finalizado';const t=turno(c.turno);if(t)t.estado='atendido';
+    const nt=S.offer&&S.offer.result?turno(S.offer.result):null,name=pac(c.pac).nombre;
+    S.salida.push({id:'s'+Date.now(),pac:c.pac,prof:c.prof,salida:nowHM(),turnoNuevo:nt?`${fmtLong(nt.fecha)} · ${nt.hora} h (${nt.id})`:null});
+    S.cola=S.cola.filter(x=>x.id!==c.id);S.att=null;S.offer=null;
+    const nx=d.next==='1'&&nextWaiting();
+    if(nx){callPatient(nx);toast(`${name} finalizó. Llamando a ${pac(nx.pac).nombre}`)}
+    else{S.view='o.queue';toast(`Atención de ${name} finalizada`)}
+  },
+  'offer-accept'(d){const o=S.offer,p=pac(o.pac),t={id:newTurnoId(),pac:p.id,prof:o.prof,fecha:d.f,hora:d.h,tipo:o.tipo,estado:'confirmado'};S.turnos.push(t);sendWA(p,waConfirmText(p,t));o.result=t.id;toast('Turno asignado. Constancia enviada por WhatsApp.',true)},
+  'offer-reject'(){S.offer.asking=true},
+  'offer-more'(){S.offer.asking=false;S.offer.page++},
+  'offer-stop'(){S.offer.asking=false;S.offer.ended=true},
+  'hc-det'(d){const hist=S.hc.filter(h=>h.pac===d.pac).sort((a,b)=>b.fecha.localeCompare(a.fecha));S.modal={type:'hcdet',h:hist[+d.i]}},
+};
+const F={
+  login(){const u=checkLogin(PROFS);if(u){S.oUser=u.id;S.view='o.queue'}},
+  'o-hc'(){saveAtt();S.err={};S.modal={type:'confirm-hc'}},
+};
+SHORTCUTS=[
+  {k:'1',label:'Ir a Sala de espera',run:()=>{if(S.view!=='o.login')S.view='o.queue'}},
+  {k:'2',label:'Ir a Agenda',run:()=>{if(S.view!=='o.login')S.view='o.agenda'}},
+  {k:'3',label:'Ir a Historias clínicas',run:()=>{if(S.view!=='o.login')S.view='o.hcl'}},
+  {k:'K',label:'Buscar una historia clínica',run:()=>{if(S.view==='o.login')return;S.view='o.hcl';S.focusId='hc-q'}},
+  {k:'N',label:'Llamar al siguiente paciente',run:()=>{if(S.view==='o.login')return;const n=nextWaiting();if(current())toast('Primero terminá la atención en curso');else if(n)callPatient(n);else toast('No hay pacientes en la sala de espera')}},
+  {k:'0',label:'Ver esta ayuda de atajos',run:()=>{S.modal={type:'kbd'}}},
+];
+
+bindEvents();
+document.addEventListener('change',e=>{
+  if(e.target.id==='of-prof'){S.offer.prof=e.target.value;S.offer.page=0;S.offer.tipo=prof(e.target.value).tipos[0];render()}
+  if(e.target.id==='of-tipo'){S.offer.tipo=e.target.value}
+});
+document.addEventListener('input',e=>{
+  const k=e.target.dataset.input;if(!k)return;S[k]=e.target.value;
+  const pos=e.target.selectionStart;render();const el=$(e.target.id);if(el){try{el.setSelectionRange(pos,pos)}catch(_){}}
+});
+render();
+</script>
+</body>
+</html>
