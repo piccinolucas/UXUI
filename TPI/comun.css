@@ -1,5 +1,5 @@
 /* =====================================================================
-   Consultorio Odontológico — estilos compartidos (Paciente, Secretaría, Odontólogo)
+   Consultorio Odontológico — estilos compartidos (Paciente, Recepción, Odontólogo)
    Un solo sistema de diseño para las tres interfaces: mismos tokens, mismos
    componentes y mismos estados. Se usan propiedades lógicas (inline/block) para
    que el layout se espeje solo cuando la página está en un idioma RTL.
@@ -183,7 +183,7 @@ td.num{font-variant-numeric:tabular-nums}
   .tbl-wrap td[data-label=""]::before{content:none}
 }
 
-/* ---------- calendario (Paciente y Secretaría) ---------- */
+/* ---------- calendario (Paciente y Recepción) ---------- */
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
 .cal .h{font-size:.8125rem;color:var(--muted);text-align:center;padding-bottom:4px;font-weight:600}
 .cal button{min-height:56px;border-radius:10px;border:1px solid transparent;background:var(--surface-2);cursor:pointer;font-variant-numeric:tabular-nums;font-weight:600;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;line-height:1.1}
@@ -241,7 +241,7 @@ td.num{font-variant-numeric:tabular-nums}
 .brand .mark{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
 .brand small{display:block;font-family:var(--f-body);font-weight:500;font-size:.8rem;color:var(--muted);letter-spacing:.02em}
 
-/* ---------- shell del personal (Secretaría y Odontólogo) ---------- */
+/* ---------- shell del personal (Recepción y Odontólogo) ---------- */
 .swrap{padding-block:24px 40px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 .sshell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 48px);max-width:1440px;margin:0 auto;background:var(--surface);border-radius:24px;border:1px solid var(--line);box-shadow:var(--shadow-panel);overflow:hidden}
 .side{background:var(--surface);border-inline-end:1px solid var(--line);padding:28px 16px;display:flex;flex-direction:column;gap:22px}
