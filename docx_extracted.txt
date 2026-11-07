@@ -1,0 +1,384 @@
+1. Introducción y Problema a Solucionar
+En la gestión cotidiana de los centros odontológicos, el proceso de recepción y atención al paciente suele convertirse en un cuello de botella crítico. Las salas de espera llenas, las demoras en la validación manual de turnos, la falta de agilidad para registrar a quienes asisten sin cita previa y los errores humanos en las agendas administrativas generan frustración tanto en los usuarios como en el personal administrativo. En un sector donde la puntualidad y la tranquilidad del paciente son determinantes para construir confianza, la falta de una herramienta ágil y centralizada impacta directamente en la calidad del servicio y en la eficiencia operativa de la clínica.
+La Solución: Propuesta de Valor
+Para transformar esta dinámica, presentamos un sistema digital integral de gestión de turnos y recepción para centros odontológicos, con tres interfaces pensadas para tres usuarios distintos que comparten los mismos datos y el mismo sistema de diseño:
+Secretaría (recepción): recibe a la persona que llega, valida su turno en una sola pantalla que sigue el diagrama de decisión del flujo (¿Está registrado? → ¿Tiene turno? → ¿Es válido?), la suma a la sala de espera, da de alta pacientes nuevos y ofrece turnos con un calendario que muestra cuántos horarios libres hay cada día.
+Odontólogo/a: ve su sala de espera, llama al siguiente paciente, consulta alertas médicas y antecedentes, registra la atención en un odontograma (notación FDI), revisa antes de guardar la historia clínica y envía las indicaciones al paciente por WhatsApp.
+Paciente (portal web): ingresa con su DNI y contraseña, ve su próximo turno y su posición en la sala de espera, pide, cancela o reprograma turnos sin llamar al consultorio, y completa su ficha de salud, que solo ve el profesional. Está disponible en español y en árabe (idioma de escritura de derecha a izquierda).
+De este modo, la solución centraliza todo el ciclo de atención —desde el pedido del turno hasta el cierre administrativo— reduciendo los tiempos de espera y la carga operativa del equipo del centro.
+La Importancia de la UX/UI
+En este tipo de servicios, el diseño de la experiencia de usuario (UX) y de las interfaces (UI) no es un mero valor estético ni un complemento secundario: es el núcleo funcional sobre el que se sostiene toda la solución. Una interfaz poco clara o un flujo complejo ralentiza la recepción de un paciente, lo que impacta en la eficiencia administrativa y, sobre todo, en el tiempo de espera de las personas. Un diseño UX/UI accesible, intuitivo y eficiente garantiza que el personal ejecute cada acción en pocos segundos y que el paciente pueda resolver sus trámites solo, convirtiendo la tecnología en un puente hacia una atención humana y organizada.
+2. El Proceso de Descubrimiento e Investigación (UX)
+Investigación de Usuarios
+Para identificar con precisión al público objetivo y entender las verdaderas fricciones del servicio, la investigación se basó en la inmersión directa y el conocimiento de primera mano. A diferencia de los métodos tradicionales abstractos, el equipo contó con una ventaja estratégica clave: uno de los integrantes tiene un vínculo familiar directo con la gestión de un centro odontológico. Esto permitió realizar entrevistas cualitativas informales y observación participante en un entorno real de trabajo. Gracias a ello, se mapearon los procesos cotidianos y las limitaciones operativas que sufre el personal de administración al lidiar con agendas físicas, anotaciones manuales y tareas repetitivas que son susceptibles de errores y demoras.
+Personas y Mapas de Empatía
+A partir de los hallazgos en el centro odontológico, se definieron los perfiles de usuario clave (personas) que operan el sistema en el día a día. Los actores principales identificados son Marcos y Lucía, ambos administrativos de entre 30 y 35 años.
+Características y Adaptación: Al encontrarse en ese rango etario, poseen una curva de aprendizaje rápida y una adaptación muy sencilla a las herramientas tecnológicas, lo que permite exigir interfaces dinámicas sin temor al rechazo digital.
+Puntos de Dolor (Pain Points):
+Carga excesiva de trabajo manual y tedioso (anotaciones en papel o planillas desarticuladas).
+Falta de automatización en la validación de la llegada de los pacientes, lo que genera cuellos de botella en la sala de espera.
+Estrés operativo en horarios pico al intentar conciliar citas previas con pacientes espontáneos o reprogramaciones de última hora.
+Personas secundarias (trabajo de clase 3, tablero de Miro)
+Además del personal administrativo, el producto tiene otros dos tipos de usuario. Para ellos usamos las personas que el grupo construyó en clase:
+Paula Legrand, odontóloga, 53 años. Trabaja con papeles y planillas, quiere que sus pacientes gestionen su turno de forma autónoma, necesita compartir rápido el avance de cada paciente y ver el historial mientras atiende. Decisiones que tomamos por ella: turnero autónomo en el portal del paciente, envío de indicaciones por WhatsApp al cerrar la atención, alertas médicas visibles en la ficha y en la atención, texto base de 16 px y áreas táctiles de 44 px o más (clase 18: personas mayores).
+Pablo López, odontólogo, 30 años. Abre su propio consultorio, no tiene tiempo para administrar a mano y viaja seguido, por lo que necesita control remoto. Decisiones: interfaz web que funciona en cualquier dispositivo (también en celular), agenda del día y de los próximos días, y atajos de teclado para resolver rápido.
+Paciente. Es la persona que pide el turno y espera en la sala. Sus necesidades surgieron de la observación en el centro: saber cuánto falta para que lo atiendan, no tener que llamar para pedir o cancelar un turno y no repetir sus datos en cada visita. Pendiente: construir una persona de paciente validada con entrevistas.
+Definición del Problema
+La síntesis de la investigación permitió concretar los desafíos que la interfaz y la experiencia de usuario debían resolver de forma imperativa:
+Reducir la fricción administrativa: Eliminar los registros en papel y minimizar los clics/pasos necesarios para validar o crear un turno.
+Optimizar el flujo de recepción: Brindar una pantalla ágil que permita a Marcos y Lucía identificar al instante si el paciente que llega cuenta con reserva, agilizando el ingreso a gabinetes y reduciendo la congestión en recepción.
+Flexibilidad operativa: Ofrecer caminos rápidos para resolver imprevistos (pacientes sin cita previa o cancelaciones) sin saturar al personal ni desorganizar la agenda del día.
+El objetivo es que a través del análisis del personal administrativo de este centro odontológico crear un producto que no solo ayude específicamente a su situación sino que se abra y adapte a cualquier centro odontológico con su respectivo caudal de pacientes.
+3. Conceptualización y Diseño de la Experiencia (UX)
+Flujos de usuario
+El recorrido completo se diseñó en el diagrama de flujo de la clase 4 (tablero de Miro) y el prototipo lo respeta paso a paso. La pantalla de Recepción muestra literalmente las decisiones del diagrama, para que la secretaria siempre sepa en qué paso está y qué hacer después:
+Llegada del paciente → ¿Está registrado? Si no lo está, recepción lo da de alta (datos personales, cobertura y consentimiento). El paciente no puede registrarse solo: el alta la hace siempre secretaría, que le envía por WhatsApp una contraseña provisoria para entrar al portal.
+¿Tiene turno? Si no tiene, se le ofrecen turnos con el calendario (profesional → día → horario) y se envía la constancia por WhatsApp.
+¿El turno es válido? Si es para otro día, la pantalla muestra qué decirle al paciente. Si es válido, se lo agrega a la sala de espera (con aviso opcional por WhatsApp).
+Atención: el odontólogo llama al paciente, registra la atención, revisa y guarda la historia clínica, envía indicaciones y decide si necesita un turno de seguimiento.
+Cierre: el paciente pasa a "Atendidos · falta el cierre" y recepción completa el cierre administrativo (cobertura, código de prestación) y, si hace falta, le da otro turno.
+El portal del paciente agrega tres recorridos que antes dependían de una llamada telefónica: pedir turno (en 3 pasos con indicador de progreso), cancelar o reprogramar (con confirmación) y completar la ficha de salud antes de la primera consulta.
+Arquitectura de la información
+Cada rol ve solo las secciones que necesita, con etiquetas cortas y en el lenguaje del consultorio. Unificamos la terminología en los tres roles para que una misma cosa se llame siempre igual (principio de consistencia, clase 8):
+Rol
+Secciones del menú
+Pantallas de segundo nivel (con breadcrumbs)
+Secretaría
+Recepción · Sala de espera · Pacientes · Agenda
+Ficha del paciente · Registrar paciente · Cierre de atención
+Odontólogo/a
+Sala de espera · Agenda · Historias clínicas
+Ficha del paciente · Atención · Cierre de la atención · Historia clínica
+Paciente
+Mi turno · Pedir turno · Mi ficha
+Ficha de salud · Pasos de pedir turno · Constancia
+Término elegido
+Reemplaza a
+Por qué
+Sala de espera
+Cola de espera, Cola de pacientes
+Es el nombre del lugar físico que todos conocen (relación con el mundo real, Nielsen).
+Historia clínica / Historias clínicas
+Historial clínico, Historiales clínicos
+Es el término legal y profesional (Ley 26.529).
+Agenda
+Turnos, Agenda de hoy
+Una sola palabra para la lista de turnos del día y de los próximos días.
+Ficha de salud
+Cuestionario de salud, anamnesis
+Palabra entendible para el paciente; "anamnesis" es jerga profesional.
+Wireframes (Bocetos):
+Principios de Diseño UX aplicados
+1. Usabilidad (heurísticas de Nielsen, clase 6)
+Visibilidad del estado del sistema: el paciente ve su posición en la sala de espera, la demora estimada y una línea de etapas (Recepción → En espera → Llamado → Atendido). Los avisos importantes (turno asignado, historia clínica guardada, turno cancelado) quedan en pantalla hasta que se cierran.
+Relación con el mundo real: términos del consultorio ("sala de espera", "historia clínica", "obra social") y voseo rioplatense en todas las pantallas.
+Control y libertad: el paciente puede cancelar o reprogramar su turno con la misma facilidad con la que lo pide; al reprogramar, el turno anterior se mantiene hasta confirmar el nuevo. Todos los modales se cierran con Esc.
+Prevención de errores: la historia clínica no se puede borrar, por eso antes de guardarla se muestra un resumen para revisar. Cancelar un turno pide confirmación. Los botones que no se pueden usar todavía explican por qué ("El botón se habilita cuando elegís un horario").
+Reconocer, diagnosticar y recuperarse de errores: los errores aparecen junto a cada campo, al salir del campo y al enviar, con borde, ícono y texto que dice cómo corregirlo ("Ingresá 7 u 8 números, sin puntos"). Arriba del formulario se resume cuántos campos hay que corregir y el foco va al primero.
+Coherencia entre texto y acción: "Finalizar y llamar al siguiente" llama efectivamente al siguiente paciente; el paciente aprieta "Confirmar turno" (y no "Solicitar") porque el turno queda confirmado.
+2. Simplicidad
+Una decisión por pantalla: la recepción avanza paso a paso y cada paso muestra solo su botón principal.
+Revelado progresivo: el ofrecimiento de turnos aparece solo cuando el paciente no tiene turno; el formulario de alta de secretaría es de un solo paso; la ficha de salud la completa el paciente después, desde su portal.
+Información mínima necesaria: el calendario solo deja elegir días con horarios libres y muestra la cantidad en cada día, así nunca se llega a "no hay lugar".
+3. Eficiencia y niveles de experiencia (clase 19)
+Para el personal (uso intensivo, todo el día): atajos de teclado con Alt (Alt+1…4 para cambiar de sección, Alt+K para buscar, Alt+N para registrar un paciente o llamar al siguiente, Alt+0 para ver la ayuda). Usan Alt para no interferir con los lectores de pantalla (WCAG 2.1.4).
+Para el paciente (uso ocasional): pasos guiados con indicador de progreso, ayudas debajo de cada campo y usuarios de prueba visibles en la demo.
+Automatización: constancias, recordatorios, cancelaciones e indicaciones por WhatsApp; la sala de espera se actualiza sola al llamar o finalizar una atención.
+4. Accesibilidad (WCAG 2.1, clase 13)
+La accesibilidad se trabajó como requisito y se verificó en el código. Resumen de criterios cubiertos:
+Criterio WCAG 2.1
+Cómo se cumple en el prototipo
+1.4.3 / 1.4.6 Contraste del texto (AA y AAA)
+Todas las combinaciones de texto superan 7:1 (checklist de la cátedra). Ej.: texto secundario 10,35:1, botón primario 8,91:1.
+1.4.11 Contraste de componentes
+Bordes de campos y botones #64748B: 4,76:1 (antes #94A3B8: 2,56:1, no cumplía).
+1.4.1 Uso del color
+Estados con texto además de color: "Próximo", "Confirmado", "Pocos turnos" (borde punteado), días sin turnos tachados, errores con ícono y texto.
+2.1.1 / 2.4.3 Teclado y orden del foco
+Todo se usa con Tab, Shift+Tab, Enter, Espacio y Esc. Al redibujar la pantalla el foco vuelve al mismo control (o al título si cambió la pantalla). Las filas clickeables son botones accesibles.
+2.4.7 Foco visible
+Contorno de 3 px en color de marca en todos los controles.
+2.5.5 Tamaño del objetivo
+Todos los controles miden 44 px o más (clase 11); las piezas del odontograma, 44×48 px.
+1.3.1 / 3.3.2 Etiquetas y estructura
+Etiquetas visibles asociadas a cada campo, fieldset/legend en preguntas Sí/No, tablas con encabezados, breadcrumbs en pantallas de segundo nivel.
+3.3.1 / 3.3.3 Errores
+Mensajes junto al campo, en lenguaje claro y con la forma de corregirlos.
+3.3.4 Prevención de errores
+Revisión antes de guardar la historia clínica y confirmación antes de cancelar un turno.
+2.2.1 Tiempo suficiente
+Los avisos duran 6 s y los importantes no desaparecen solos.
+4.1.2 Nombre, rol y valor
+Botones de alternar con aria-pressed, desplegable de idioma con aria-expanded, menú con aria-current, íconos decorativos ocultos y botones con nombre en contexto ("Llamar a Saccone, Facundo").
+3.1.1 / 3.1.2 Idioma
+Atributo lang en la página y en los textos en otro idioma.
+Decisión del equipo: se evaluó un enlace "Saltar al contenido" y se decidió no incluirlo, porque los menús tienen entre 3 y 4 opciones y el costo de tabular es bajo; el personal además cuenta con atajos de teclado para ir directo a cada sección.
+5. Consistencia
+Las tres interfaces comparten un único sistema de diseño (archivos comun.css y comun.js): mismos colores, tipografías, componentes, estados y mensajes de error.
+Misma estructura en todas las pantallas: título y contexto arriba, datos agrupados en tarjetas y acción principal destacada; acción secundaria a la izquierda con borde y primaria a la derecha con relleno.
+Mismo ingreso para los tres roles: DNI + contraseña, botón Mostrar y usuarios de prueba debajo.
+Ética, privacidad y equidad (clase 7)
+Mínimo privilegio: la secretaría ve datos personales, cobertura y turnos, pero no antecedentes, diagnósticos ni notas: solo si la ficha de salud está completa o pendiente. Los datos clínicos los ve únicamente el profesional (confidencialidad de la historia clínica, Ley 26.529).
+Consentimiento informado: el alta de paciente incluye una casilla obligatoria y sin marcar de antemano, con un desplegable que explica para qué se usan los datos y los derechos del paciente (Ley 25.326). Evitamos el opt-in forzado que la clase cita como mala práctica.
+Sin patrones oscuros: cancelar es tan fácil como reservar (evitamos el "roach motel"), y "Pocos turnos" se calcula con datos reales (no es una falsa urgencia como la de Booking).
+Ingreso seguro: si el DNI no existe o la contraseña es incorrecta, el mensaje es siempre el mismo, para no revelar quién es paciente; la contraseña no se conserva tras un error. En la maqueta las contraseñas están en texto plano; en un sistema real se guardan cifradas.
+Lenguaje inclusivo y sin sesgos (clase 16): "alérgico/a", "registrado/a", la pregunta sobre embarazo es neutra ("¿Hay un embarazo en curso?") e incluye "No aplica"; no se asume el género por el nombre.
+Diversidad de usuarios y contextos (clases 18 a 21)
+Edades: texto base de 16 px, contraste AAA, botones grandes y pasos de a uno, pensando en pacientes y profesionales mayores (persona Paula, 53 años).
+Contextos de uso: el odontólogo puede usar la pantalla con guantes (piezas de 44×48 px); la recepción trabaja en hora pico (todo el recorrido en una sola pantalla); el paciente consulta desde el celular (diseño adaptable, tablas que se convierten en tarjetas).
+Dispositivos (clases 11 y 12): en pantallas de 820 px o menos el menú lateral pasa a una barra superior con desplazamiento y el botón de salir sigue visible; en 700 px o menos las tablas se muestran como tarjetas.
+Internacionalización (clases 14 y 15)
+Codificación UTF-8 y atributo de idioma en todas las páginas.
+El portal del paciente tiene todos los textos en un diccionario (español y árabe) separado del código; se cambia desde un desplegable con el ícono de un mundo, al final del encabezado.
+En árabe la página pasa a dirección derecha a izquierda (RTL): el diseño se espeja solo porque el CSS usa propiedades lógicas, las flechas se invierten y el selector de idioma pasa al extremo izquierdo, como hace Wikipedia (analizado en clase 15).
+DNI, teléfonos, horarios y códigos se mantienen de izquierda a derecha; las fechas se formatean con la configuración regional (en árabe, con dígitos occidentales).
+Tipografía con glifos árabes (IBM Plex Sans Arabic) e interlineado mayor por los signos diacríticos.
+La traducción al árabe debe validarse con hablantes nativos antes de un uso real. Los nombres propios, la dirección y las indicaciones escritas por el profesional quedan en español.
+4. Diseño Visual y de Interfaz (UI)
+La identidad visual del consultorio busca transmitir limpieza, calma y confianza, atributos esperables en un centro de salud. Se apoya en un verde azulado oscuro como color de marca, fondos claros con mucho espacio en blanco y tipografías de alta legibilidad, de modo que la interfaz no compita con la tarea del usuario. El color fuerte se reserva para la acción principal y el estado activo.
+Paleta de colores y contraste medido
+Uso
+Color
+Contraste
+Marca y botón primario (texto blanco)
+#09534D
+8,91:1
+Fondo suave de marca (menú activo del paciente, avisos)
+#EBF5F4 con texto #09534D
+8,02:1
+Texto principal
+#0F172A sobre #F8FAFC
+17,06:1
+Texto secundario y ayudas
+#334155 sobre blanco
+10,35:1
+Bordes de controles (campos, botones secundarios)
+#64748B
+4,76:1 (mínimo 3:1)
+Divisores decorativos
+#CBD5E1
+No identifica controles
+Éxito / confirmado
+#0F5632 sobre #EAF7F0
+7,95:1
+Advertencia / pocos turnos
+#663D00 sobre #FDF6E9
+8,75:1
+Error / alerta médica
+#96150E sobre #FEEFEF
+7,80:1
+Paciente "Próximo" (borde)
+#15803D
+4,79:1 + etiqueta de texto
+Tipografía
+Se combinan tres familias con roles claros. La jerarquía se construye con tamaño y peso, no con mayúsculas: las etiquetas de los campos van en minúscula porque las mayúsculas sostenidas se leen peor.
+Bricolage Grotesque (títulos): carácter propio y amable; títulos de pantalla de 28 px y subtítulos de 20 px.
+Onest (texto y controles): muy legible en pantalla; 16 px de base (mínimo recomendado en clases 11 y 18), etiquetas de 14,4 px en negrita y ayudas de 13,6 px.
+JetBrains Mono (datos): DNI, códigos de turno, horarios y números de historia clínica, con cifras de ancho fijo para leer y comparar sin errores.
+IBM Plex Sans Arabic: solo cuando el portal del paciente está en árabe.
+Iconografía
+Estilo: íconos lineales de trazo uniforme (1,8 px) y esquinas redondeadas.
+Metáforas reconocibles: muela (marca), puerta (recepción), calendario (agenda y turnos), portapapeles (historia clínica), personas (pacientes), campana (llamado), mundo (idioma), candado (ingreso y privacidad).
+Regla de uso: los íconos siempre van acompañados de texto y son decorativos para los lectores de pantalla. Las flechas se espejan en árabe.
+Componentes y estados
+Botones: primario relleno en verde, secundario blanco con borde, de peligro en rojo (Cancelar turno). Estados de hover, presionado, foco, deshabilitado y activo.
+Campos: etiqueta visible siempre, ayuda debajo, estado de error (borde rojo de 2 px, fondo rosado, ícono y texto) y estado válido (borde verde).
+Calendario: días con turnos en verde con la cantidad de horarios libres; con pocos turnos, borde punteado ámbar; sin turnos o sin atención, tachados. El lector de pantalla anuncia "Martes 3 de noviembre: 8 turnos".
+Etiquetas de estado: pastillas con texto (Confirmado, En sala de espera, Ficha de salud pendiente, Próximo).
+Navegación: menú lateral fijo en el personal y encabezado con menú en el portal del paciente; breadcrumbs e indicador de pasos.
+Modales y avisos: el foco entra al modal y queda dentro hasta cerrarlo; los avisos importantes tienen botón Cerrar.
+Primera iteración: mockups de alta fidelidad en Figma
+Estos mockups fueron la primera versión de alta fidelidad. A partir de ellos construimos un prototipo funcional en HTML y lo fuimos corrigiendo con la checklist de la cátedra; los cambios y sus motivos se resumen al final de esta sección.
+Prototipo funcional (versión actual)
+Las capturas siguientes son del prototipo navegable (carpeta TPI: Paciente.html, Secretaria.html y Odontologo.html).
+Figura 1. Secretaría · Recepción: la pantalla sigue el diagrama de decisión del flujo; cada paso muestra su resultado (SÍ / NO) y una sola acción.
+Figura 2. Secretaría · Dar turno: el calendario muestra cuántos horarios libres hay en cada día.
+Figura 3. Secretaría · Registrar paciente: errores junto a cada campo, resumen arriba y consentimiento sin marcar de antemano.
+Figura 4. Odontólogo · Atención: odontograma con piezas de 44×48 px, breadcrumbs y campos con ayuda.
+Figura 5. Odontólogo · Revisión antes de guardar: la historia clínica no se puede borrar.
+Figura 6. Paciente · Mi turno: reprogramar y cancelar están a la vista; las indicaciones del profesional aparecen en las últimas atenciones.
+Figura 7. Paciente · Pedir turno: indicador de 3 pasos, calendario con cantidad de turnos y horarios agrupados por mañana y tarde.
+Figura 8. Paciente · Versión en árabe: el diseño se espeja (RTL) y los datos como DNI y horarios siguen de izquierda a derecha.
+Iteración: qué cambió y por qué
+Antes
+Ahora
+Fundamento
+El paciente se registraba solo desde el portal.
+El alta la hace siempre secretaría y el paciente recibe una contraseña provisoria por WhatsApp.
+Control del padrón de pacientes y de la cobertura; evita registros duplicados.
+El cuestionario de salud lo cargaba secretaría (paso 2 del alta, Miro clase 10).
+Lo completa el paciente desde "Mi ficha" y lo ve solo el profesional.
+Privacidad y mínimo privilegio (Ley 26.529).
+Secretaría veía antecedentes, alergias e historias clínicas.
+Ve solo si la ficha de salud está completa o pendiente.
+Confidencialidad de los datos clínicos.
+Historias clínicas con botón de borrar (mockup de Figma).
+Los registros no se borran: se corrigen con una nueva entrada y se revisan antes de guardar.
+Prevención de errores y validez legal de la historia clínica.
+El paciente no podía cancelar ni reprogramar.
+Cancelar y Reprogramar en "Mi turno", con confirmación.
+Control y libertad; evitar el "roach motel" (clase 7).
+Ingreso solo con DNI / elegir profesional de una lista.
+DNI + contraseña en los tres roles, con mensaje de error genérico.
+Seguridad de datos de salud y consistencia.
+Calendario sin cantidad de turnos.
+Cada día muestra cuántos horarios libres tiene.
+Información mínima necesaria y no depender solo del color.
+Errores al final del formulario.
+Errores junto a cada campo, en vivo y con resumen.
+Heurística 9 de Nielsen y clase 9 (formularios).
+Texto de 14 px, etiquetas en mayúsculas de 10 px.
+Texto de 16 px y etiquetas de 14,4 px en minúscula.
+Clases 11 y 18; persona Paula, 53 años.
+Botones y chips de 28 a 34 px.
+Todos los controles de 44 px o más.
+Clase 11 (área táctil) y WCAG 2.5.5.
+Bordes de controles con contraste 2,56:1.
+Bordes con contraste 4,76:1.
+WCAG 1.4.11.
+La navegación con Tab se perdía al actualizar la pantalla.
+Navegación completa por teclado y atajos para el personal.
+Checklist de la cátedra: "todo el contenido es navegable con teclado".
+"Quitar de la cola y llamar al siguiente" no llamaba a nadie.
+"Finalizar y llamar al siguiente" llama al siguiente paciente.
+Coherencia entre el texto y la acción.
+En el celular no se podía cerrar sesión y las tablas se cortaban.
+Salida siempre visible y tablas convertidas en tarjetas.
+Clase 11: no esconder funciones esenciales.
+Solo español.
+Español y árabe (RTL) en el portal del paciente.
+Checklist de internacionalización (LTR y RTL).
+5. Prototipado y Pruebas con Usuarios
+Prototipos
+El proceso pasó por tres niveles de fidelidad, como propone la clase 5: bocetos en papel (baja fidelidad), mockups en Figma (alta fidelidad) y un prototipo funcional en HTML que simula la experiencia real con datos de ejemplo. El prototipo funcional permite probar los flujos completos con teclado, mouse o pantalla táctil, en computadora y en celular.
+Para probarlo se usan estos usuarios de prueba (todos con la contraseña Demo1234):
+Rol
+DNI
+Qué permite mostrar
+Secretaría
+28455120 (Ana Ríos) · 33102877 (Julián Ferrero)
+Recepción, alta de pacientes, turnos y cierre administrativo.
+Odontólogo/a
+25331408 (Dra. Martina López)
+Sala de espera con pacientes, atención completa y envío de indicaciones.
+Odontólogo/a
+29874512 · 27665903
+Otros profesionales (sin pacientes en espera).
+Paciente
+44122123
+Turno para hoy: cancelar y reprogramar.
+Paciente
+41888999
+Ficha de salud pendiente (dado de alta por recepción).
+Paciente
+27999555
+DNI no registrado: muestra el error de ingreso.
+Evaluaciones realizadas
+Evaluación heurística del prototipo con las 10 heurísticas de Nielsen y la checklist de la cátedra (ver anexo).
+Evaluación de accesibilidad: contraste medido con la fórmula de WCAG para cada combinación de colores, recorrido completo solo con teclado y revisión de nombres y estados para lectores de pantalla.
+Pruebas automáticas de los flujos: 87 verificaciones ejecutadas en el navegador sobre las tres interfaces (ingreso, validación de formularios, cancelar y reprogramar, ficha de salud, calendario, cambio de idioma y dirección RTL, atajos de teclado, cierre de modales con Esc), sin errores.
+Revisión en distintos tamaños de pantalla: escritorio (1280 px) y celular (390 px).
+Benchmark de competidores: evaluación de usabilidad con la escala SUS de sistemas de la competencia (clase 6, tablero de Miro).
+Plan de pruebas con usuarios reales
+Para validar el diseño con las personas que lo van a usar, planificamos pruebas moderadas con el método de pensar en voz alta (think aloud) y el cuestionario SUS al terminar. Se miden la tasa de éxito, el tiempo por tarea, la cantidad de errores y el puntaje SUS (preguntas impares: respuesta − 1; pares: 5 − respuesta; suma × 2,5).
+Rol y participantes
+Tareas
+Resultado
+Secretaría (personal del centro odontológico)
+1. Recibir a un paciente con turno y sumarlo a la sala de espera.
+2. Registrar un paciente nuevo y darle un turno.
+3. Hacer el cierre administrativo de una atención.
+[Completar: éxito, tiempo, errores, SUS]
+Odontólogo/a
+1. Llamar al siguiente paciente.
+2. Registrar la atención y guardar la historia clínica.
+3. Enviar las indicaciones y ofrecer un turno de seguimiento.
+[Completar]
+Pacientes (distintas edades y niveles de experiencia)
+1. Ingresar y cancelar el turno.
+2. Pedir un turno nuevo.
+3. Completar la ficha de salud.
+[Completar]
+Iteración: los hallazgos se priorizan según su impacto en la experiencia y se vuelven a probar en la siguiente versión. El diseño es un proceso continuo de mejora, no un evento único.
+6. Conclusión y Lanzamiento
+Resultados clave
+Menos fricción en recepción: todo el recorrido de llegada se resuelve en una pantalla que sigue el diagrama de decisión.
+Autonomía del paciente: pide, cancela y reprograma turnos sin llamar, ve cuánto falta para que lo atiendan y completa su ficha antes de la consulta.
+Profesionales con la información que necesitan, cuando la necesitan: alertas médicas, odontograma y envío de indicaciones en la misma atención.
+Accesible para todas las personas: contraste AAA en el texto, uso completo con teclado, áreas táctiles grandes y versión en un idioma RTL.
+Datos de salud protegidos: cada rol ve solo lo que necesita y el paciente da su consentimiento informado.
+Probá la demo
+Abrí los archivos de la carpeta TPI en el navegador e ingresá con los usuarios de prueba de la sección 5. Recomendamos empezar por Secretaría (recibir a la paciente con DNI 44122123), seguir por Odontólogo (Dra. Martina López) y terminar en el portal del paciente.
+Anexo: Checklist de la cátedra
+Ítem
+Estado
+Dónde se ve
+El flujo de usuario es claro y eficiente
+Cumple
+Recepción con pasos del diagrama; pedir turno en 3 pasos.
+Contenido jerárquicamente organizado
+Cumple
+Títulos, tarjetas y acción principal destacada.
+Menús consistentes y fáciles de explorar
+Cumple
+Menú lateral (personal) y superior (paciente), con estado activo.
+Rutas o breadcrumbs visibles
+Cumple
+Pantallas de segundo nivel e indicadores de pasos.
+Jerarquía clara en color, tamaño y espaciado
+Cumple
+Sistema de diseño compartido.
+Textos legibles en todas las pantallas
+Cumple
+Base de 16 px; probado en 1280 y 390 px.
+Estados hover, active y error
+Cumple
+Botones, campos, calendario y chips.
+Microinteracciones que aportan claridad
+Cumple
+Selección de piezas, días y horarios; avisos y foco.
+Se adapta a móvil, tablet y escritorio
+Cumple
+Menú, grillas y tablas adaptables.
+Botones de tamaño adecuado para touch
+Cumple
+44 px o más.
+Contraste mínimo recomendado (+7)
+Cumple
+Todo el texto supera 7:1.
+Todo navegable con teclado
+Cumple
+Tab, Shift+Tab, Enter, Espacio, Esc y atajos con Alt.
+Imágenes con texto alternativo
+Cumple
+Íconos decorativos ocultos; botones con nombre accesible.
+Formularios con etiquetas claras
+Cumple
+Etiquetas visibles, ayudas y errores junto al campo.
+Texto correcto en todos los idiomas
+Cumple
+UTF-8; español y árabe.
+Soporte LTR y RTL
+Cumple
+Portal del paciente en árabe.
+Sin texto incrustado en imágenes
+Cumple
+Toda la interfaz es texto real.
+Sin patrones oscuros
+Cumple
+Cancelar tan fácil como reservar; consentimiento sin marcar.
+Diseño sin sesgos ni estereotipos
+Cumple
+Lenguaje inclusivo; sin asumir género.
+Se comunica el uso de datos personales
+Cumple
+Consentimiento en el alta.
+Pruebas de usabilidad reales
+Pendiente
+Plan definido en la sección 5.
+Escala SUS o métricas similares
+Parcial
+SUS de competidores (clase 6); falta SUS del prototipo.
+Hallazgos y mejoras documentados
+Cumple
+Tabla "Iteración: qué cambió y por qué".
